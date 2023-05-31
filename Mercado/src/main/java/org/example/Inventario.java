@@ -1,3 +1,7 @@
+package org.example;
+
+import org.example.Exceptions.ProdutoInvalidoException;
+
 import java.util.ArrayList;
 
 public class Inventario {

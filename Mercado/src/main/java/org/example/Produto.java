@@ -1,3 +1,7 @@
+package org.example;
+
+import org.example.Exceptions.ProdutoInvalidoException;
+
 public class Produto {
 
     private double preco;
