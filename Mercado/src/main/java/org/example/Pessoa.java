@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.Exceptions.PessoaInvalidaException;
+
 public class Pessoa {
 
 
