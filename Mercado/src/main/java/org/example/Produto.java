@@ -6,6 +6,8 @@ public class Produto {
 
     private double preco;
 
+    private double precoComDesconto;
+
     private String nome;
 
     private int desconto = 0;
@@ -25,10 +27,11 @@ public class Produto {
         }
     }
 
-    public void calculaDesconto(int desconto) throws ItemInvalidoException{
+    public double calculaDesconto(int desconto) throws ItemInvalidoException{
         validaDesconto(desconto);
         this.desconto = desconto;
-        this.preco = preco - (preco * (desconto/100));
+        this.precoComDesconto = preco - (preco * (desconto/100));
+        return precoComDesconto;
     }
 
     public void validaDesconto(int desconto) throws ItemInvalidoException {
@@ -48,8 +51,13 @@ public class Produto {
         this.nome = nome;
     }
 
-    public void setDesconto(int desconto){
+    public void setDesconto(int desconto) throws ItemInvalidoException{
+        validaDesconto(desconto);
         this.desconto = desconto;
+    }
+
+    public double getPrecoComDesconto() {
+        return precoComDesconto;
     }
 
     public int getDesconto() {
