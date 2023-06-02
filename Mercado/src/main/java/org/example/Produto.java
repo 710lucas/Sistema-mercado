@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.Exceptions.ProdutoInvalidoException;
+import org.example.Exceptions.ItemInvalidoException;
 
 public class Produto {
 
@@ -43,7 +43,7 @@ public class Produto {
         }
     }
 
-    public void setPreco(double preco){
+    public void setPreco(double preco) throws ItemInvalidoException{
         validaProduto(preco, this.nome);
         this.preco = preco;
     }
