@@ -27,12 +27,6 @@ public class Produto {
         }
     }
 
-    public double calculaDesconto(int desconto) throws ItemInvalidoException{
-        validaDesconto(desconto);
-        this.desconto = desconto;
-        this.precoComDesconto = preco - (preco * (desconto/100));
-        return precoComDesconto;
-    }
 
     public void validaDesconto(int desconto) throws ItemInvalidoException {
         if(desconto < 0){
@@ -55,6 +49,7 @@ public class Produto {
     public void setDesconto(int desconto) throws ItemInvalidoException{
         validaDesconto(desconto);
         this.desconto = desconto;
+        this.precoComDesconto = preco - (preco * (desconto/100));
     }
 
     public double getPrecoComDesconto() {
