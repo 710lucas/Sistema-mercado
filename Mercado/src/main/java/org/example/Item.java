@@ -49,14 +49,21 @@ public class Item {
     }
 
     public void setQuantidade(int quantidade){
+        validaQuantidade(quantidade);
         this.quantidade = quantidade;
     }
 
     public void vende(){
+        if(quantidade-1 < 0){
+            throw new IntemInvalidoException("Não há produtos suficientes disponiveis");
+        }
         this.quantidade = quantidade - 1;
     }
 
     public void vende(int quantidadeVendida){
+        if(quantidade-quantidadeVendida < 0){
+            throw new IntemInvalidoException("Não há produtos suficientes disponiveis");
+        }
         this.quantidade = quantidade - quantidadeVendida;
     }
 
