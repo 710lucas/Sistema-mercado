@@ -44,6 +44,7 @@ public class Produto {
     }
 
     public void setPreco(double preco){
+        validaProduto(preco, this.nome);
         this.preco = preco;
     }
 
