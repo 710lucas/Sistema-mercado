@@ -1,25 +1,96 @@
 package org.example;
 
-import java.util.ArrayList;
+import org.example.Exceptions.*;
 
-public class Caixa {
+import java.io.Serializable;
+import java.util.Date;
+
+public class Caixa implements Serializable {
+
 
     private Inventario  inventario;
     private Pessoa pessoa;
     private double dinheiro;
-    private ArrayList<Venda> vendas;
+    Vendas vendas;
     private int numero;
+    private Date horarioDeEntrada;
+    Venda vendaAtual;
 
     public Caixa(int numero, Inventario inventario){
         this.inventario = inventario;
         this.numero = numero;
     }
 
-    public void vende(Item item){
-        item.vende(); //adicionar exceção
+    public void login(String nome, int idade) throws PessoaInvalidaException {
+        this.pessoa  = new Pessoa(nome, idade);
+    }
+
+    public Vendas getVendas(){
+        return vendas;
+    }
+
+    public double getDinheiro(){
+        return dinheiro;
+    }
+
+    public Inventario getInventario() {
+        return inventario;
     }
 
 
+    public void vende(Item item) throws ItemInvalidoException, QuantidadeInvalidaException, PessoaInvalidaException, CaixaInvalidoException {
+        if(item == null)
+            throw new ItemInvalidoException();
+
+        if(vendaAtual == null)
+            vendaAtual = new Venda(this.pessoa, this);
+
+        vendaAtual.adicionaProduto(item);
+
+    }
+
+    public double finalizaCompra() throws VendaInvalidaException, PessoaInvalidaException, CaixaInvalidoException {
+        double dinheiroDaCompra = vendaAtual.getProdutosVendidos().getPrecoTotal();
+
+        vendas.adicionaVenda(vendaAtual);
+        dinheiro+=vendaAtual.getProdutosVendidos().getPrecoTotal();
+
+        for(Item i : vendaAtual.getProdutosVendidos().getItens()){
+            i.vende();
+        }
+
+        vendaAtual = null;
+        this.pessoa = null;
+
+        return dinheiroDaCompra;
+    }
+
+    public void cancelaCompra(){
+        vendaAtual = null;
+    }
 
 
+    public void setDinheiro(double dinheiro) {
+        this.dinheiro = dinheiro;
+    }
+
+    public void setInventario(Inventario inventario) {
+        this.inventario = inventario;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+
+    public Pessoa getFuncionario() {
+        return pessoa;
+    }
+
+    public int getNumero(){
+        return numero;
+    }
+
+    public Venda getVendaAtual() {
+        return vendaAtual;
+    }
 }
