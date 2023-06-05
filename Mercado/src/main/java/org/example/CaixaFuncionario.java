@@ -42,13 +42,15 @@ public class CaixaFuncionario extends Caixa{
     }
 
 
-    public void finalizaCompra() throws VendaInvalidaException, PessoaInvalidaException, CaixaInvalidoException {
-
+    public double finalizaCompra() throws VendaInvalidaException, PessoaInvalidaException, CaixaInvalidoException {
+        double dinheiroDaCompra = vendaAtual.getProdutosVendidos().getPrecoTotal();
         vendas.adicionaVenda(vendaAtual);
         funcionario.adicionaVendas(vendaAtual);
 
         dinheiro+=vendaAtual.getProdutosVendidos().getPrecoTotal();
         vendaAtual = new Venda(funcionario, this);
+
+        return dinheiroDaCompra;
     }
 
 }

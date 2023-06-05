@@ -1,13 +1,14 @@
 package org.example;
 
 import org.example.Exceptions.ItemInvalidoException;
+import org.example.Exceptions.QuantidadeInvalidaException;
 
 public class Item {
 
     private Produto produto;
     private int quantidade;
 
-    public Item(Produto produto, int quantidade) throws ItemInvalidoException {
+    public Item(Produto produto, int quantidade) throws QuantidadeInvalidaException {
         validaQuantidade(quantidade);
         this.produto = produto;
         this.quantidade = quantidade;
@@ -24,15 +25,15 @@ public class Item {
         this.quantidade = 1;
     }
 
-    public Item(String nome, double preco, int quantidade) throws ItemInvalidoException {
+    public Item(String nome, double preco, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
         Produto produto = new Produto(preco, nome);
         validaQuantidade(quantidade);
         this.produto = produto;
         this.quantidade = quantidade;
     }
-    public void validaQuantidade(int quantidade) throws ItemInvalidoException {
+    public void validaQuantidade(int quantidade) throws QuantidadeInvalidaException {
         if(quantidade < 0){
-            throw new ItemInvalidoException("A quantidade de itens não pode ser igual a zero");
+            throw new QuantidadeInvalidaException("A quantidade de itens não pode ser igual a zero");
         }
     }
 
@@ -48,21 +49,21 @@ public class Item {
         this.produto = produto;
     }
 
-    public void setQuantidade(int quantidade){
+    public void setQuantidade(int quantidade) throws QuantidadeInvalidaException {
         validaQuantidade(quantidade);
         this.quantidade = quantidade;
     }
 
-    public void vende(){
+    public void vende() throws QuantidadeInvalidaException{
         if(quantidade-1 < 0){
-            throw new IntemInvalidoException("Não há produtos suficientes disponiveis");
+            throw new QuantidadeInvalidaException("Não há produtos suficientes disponiveis");
         }
         this.quantidade = quantidade - 1;
     }
 
-    public void vende(int quantidadeVendida){
+    public void vende(int quantidadeVendida) throws QuantidadeInvalidaException{
         if(quantidade-quantidadeVendida < 0){
-            throw new IntemInvalidoException("Não há produtos suficientes disponiveis");
+            throw new QuantidadeInvalidaException("Não há produtos suficientes disponiveis");
         }
         this.quantidade = quantidade - quantidadeVendida;
     }
