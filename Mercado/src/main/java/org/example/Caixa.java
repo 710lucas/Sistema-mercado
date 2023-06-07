@@ -11,12 +11,14 @@ public class Caixa implements Serializable {
     private Inventario  inventario;
     private Pessoa pessoa;
     private double dinheiro;
-    Vendas vendas;
+    private Vendas vendas;
     private int numero;
     private Date horarioDeEntrada;
-    Venda vendaAtual;
+    private Venda vendaAtual;
 
-    public Caixa(int numero, Inventario inventario){
+    public Caixa(int numero, Inventario inventario) throws CaixaInvalidoException {
+        if(numero < 0)
+            throw new CaixaInvalidoException("O numero de um caixa nao pode ser menor que 0");
         this.inventario = inventario;
         this.numero = numero;
     }

@@ -68,7 +68,7 @@ public class GerenciadorFuncionario {
     public String getRelatorio(){
         String out = String.format("%-20s %-20s %-20s", "Nome", "Quantidade de vendas feitas", "Total arrecadado\n");
         for(Funcionario f : funcionarios){
-            out+= String.format("%-20s %-20s %-20s", f.getNome(), f.getVendasFeitas().getTamanho(), f.getVendasFeitas().calculaTodasVendas());
+            out+= String.format("%-20s %-20s %-20s\n", f.getNome(), f.getVendasFeitas().getTamanho(), f.getVendasFeitas().calculaTodasVendas());
         }
         return out;
     }
