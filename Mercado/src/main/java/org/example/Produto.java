@@ -9,13 +9,15 @@ public class Produto implements Serializable {
     private double preco;
 
     private String nome;
+    private String codigo;
 
     private int desconto = 0;
 
-    public Produto(double preco, String nome) throws ItemInvalidoException {
+    public Produto(double preco, String nome, String codigo) throws ItemInvalidoException {
         validaProduto(preco, nome);
         this.preco = preco;
         this.nome = nome;
+        this.codigo = codigo;
     }
 
     public void validaProduto(double preco, String nome) throws ItemInvalidoException {

@@ -84,13 +84,13 @@ public class Inventario implements Serializable {
         adicionaProduto(item, 1);
     }
 
-    public void adicionaProduto(String nome, double preco) throws ItemInvalidoException, QuantidadeInvalidaException {
-        Item i = new Item(nome, preco);
+    public void adicionaProduto(String nome, double preco, String codigo) throws ItemInvalidoException, QuantidadeInvalidaException {
+        Item i = new Item(nome, preco, codigo);
         adicionaProduto(i);
     }
 
-    public void adicionaProduto(String nome, double preco, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
-        Item i = new Item(nome, preco, quantidade);
+    public void adicionaProduto(String nome, double preco, String codigo, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
+        Item i = new Item(nome, preco, quantidade, codigo);
         adicionaProduto(i);
     }
 

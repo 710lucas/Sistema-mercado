@@ -88,4 +88,12 @@ public class Vendas implements Serializable {
         }
         return output;
     }
+
+    public ArrayList<Venda> getVendas(){
+        return vendas;
+    }
+
+    public int getTamanho(){
+        return vendas.size();
+    }
 }

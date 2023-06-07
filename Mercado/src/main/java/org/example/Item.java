@@ -21,13 +21,13 @@ public class Item implements Comparable<Item>, Serializable {
         this.quantidade = 1;
     }
 
-    public Item(String nome, double preco) throws ItemInvalidoException {
-        this.produto = new Produto(preco, nome);
+    public Item(String nome, double preco, String codigo) throws ItemInvalidoException {
+        this.produto = new Produto(preco, nome, codigo);
         this.quantidade = 1;
     }
 
-    public Item(String nome, double preco, int quantidade) throws ItemInvalidoException {
-        this.produto = new Produto(preco, nome);
+    public Item(String nome, double preco, int quantidade, String codigo) throws ItemInvalidoException {
+        this.produto = new Produto(preco, nome, codigo);
         this.quantidade = quantidade;
     }
 
