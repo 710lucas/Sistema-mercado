@@ -33,6 +33,10 @@ public class Produto implements Serializable {
         this.preco = preco;
     }
 
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
     public void setNome(String nome){
         this.nome = nome;
     }
@@ -47,9 +51,15 @@ public class Produto implements Serializable {
     public String getNome(){
         return nome;
     }
+    public String getCodigo(){
+        return codigo;
+    }
 
     public double getPrecoOriginal(){
         return preco;
+    }
+    public int getDesconto(){
+        return desconto;
     }
 
     @Override

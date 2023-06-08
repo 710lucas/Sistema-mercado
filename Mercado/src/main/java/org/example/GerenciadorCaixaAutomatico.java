@@ -49,14 +49,18 @@ public class GerenciadorCaixaAutomatico {
         caixas.remove(caixa);
     }
 
-    public void removeCaixa(int posicao){
-        caixas.remove(getCaixa(posicao));
+    public void removeCaixa(int numero) throws CaixaInvalidoException {
+        caixas.remove(getCaixaNumero(numero));
+    }
+
+    public int getQuantidadeCaixas(){
+        return caixas.size();
     }
 
     public String getRelatorio(){
-        String out = String.format("%-20s %-20s %-20s", "Numero de caixa", "Quantidade de vendas", "Rendimento total\n");
+        String out = String.format("%-20s %-40s %-20s\n", "Numero de caixa", "Quantidade de vendas", "Rendimento total");
         for(Caixa c : caixas){
-            out+=String.format("%-20s %-20s %-20s\n", caixas.indexOf(c), c.getVendas().getTamanho(), c.getVendas());
+            out+=String.format("%-20s %-40s %-20s\n", c.getNumero(), c.getVendas().getTamanho(), c.getVendas().calculaTodasVendas());
         }
         return out;
     }

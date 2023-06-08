@@ -16,12 +16,16 @@ public class Inventario implements Serializable {
         return itens;
     }
 
-    public Item getItem(String nome) throws ItemInvalidoException {
+    public Item getItem(String codigo) throws ItemInvalidoException {
         for(Item i : itens){
-            if(i.getProduto().getNome().equals(nome))
+            if(i.getProduto().getCodigo().equals(codigo))
                 return i;
         }
-        throw new ItemInvalidoException("Item não foi encontrado a partir de seu nome");
+        throw new ItemInvalidoException("Item não foi encontrado a partir de seu codigo");
+    }
+
+    public void setItens(ArrayList<Item> itens) {
+        this.itens = itens;
     }
 
     public Produto getProduto(String nome) throws ItemInvalidoException {
@@ -112,6 +116,15 @@ public class Inventario implements Serializable {
 
     public void mudaPreco(String nome, double preco) throws ItemInvalidoException {
         getItem(nome).getProduto().setPreco(preco);
+    }
+
+
+    public String getRelatorio(){
+        String out = String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Nome", "Codigo", "Quantidade", "Preco", "Desconto (%)", "Valor total");
+        for(Item i : itens){
+            out+=String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n",i.getProduto().getNome(), i.getProduto().getCodigo(), i.getQuantidade(), i.getProduto().getPreco(), i.getProduto().getDesconto(), i.calculaValorTotal());
+        }
+        return out;
     }
 
 

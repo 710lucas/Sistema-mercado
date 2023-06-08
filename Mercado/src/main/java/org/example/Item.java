@@ -72,4 +72,8 @@ public class Item implements Comparable<Item>, Serializable {
     public int compareTo(Item o) {
         return Double.compare(this.getProduto().getPreco(), o.getProduto().getPreco());
     }
+
+    public double calculaValorTotal() {
+        return quantidade*produto.getPreco();
+    }
 }

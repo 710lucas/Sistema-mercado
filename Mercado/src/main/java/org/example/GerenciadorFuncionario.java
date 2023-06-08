@@ -35,8 +35,12 @@ public class GerenciadorFuncionario {
         return funcionarios.contains(f);
     }
 
-    public boolean temFuncionario(String nome) throws FuncionarioException {
-        return funcionarios.contains(getFuncionario(nome));
+    public boolean temFuncionario(String nome){
+        try {
+            return funcionarios.contains(getFuncionario(nome));
+        } catch (FuncionarioException e) {
+            return false;
+        }
     }
 
     public void deletaFuncionario(String nome) throws FuncionarioException {
@@ -66,9 +70,9 @@ public class GerenciadorFuncionario {
     }
 
     public String getRelatorio(){
-        String out = String.format("%-20s %-20s %-40 %-20s\n", "Nome", "Quantidade de vendas feitas", "Total arrecadado", "Salario");
+        String out = String.format("%-20s %-40s %-20s %-20s\n", "Nome", "Quantidade de vendas feitas", "Total arrecadado", "Salario");
         for(Funcionario f : funcionarios){
-            out+= String.format("%-20s %-20s %-40 %-20s\n", f.getNome(), f.getVendasFeitas().getTamanho(), f.getVendasFeitas().calculaTodasVendas(), f.getSalario());
+            out+= String.format("%-20s %-40s %-20s %-20s\n", f.getNome(), f.getVendasFeitas().getTamanho(), f.getVendasFeitas().calculaTodasVendas(), f.getSalario());
         }
         return out;
     }

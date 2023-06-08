@@ -11,7 +11,7 @@ public class Caixa implements Serializable {
     private Inventario  inventario;
     private Pessoa pessoa;
     private double dinheiro;
-    private Vendas vendas;
+    private Vendas vendas = new Vendas();
     private int numero;
     private Date horarioDeEntrada;
     private Venda vendaAtual;

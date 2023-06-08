@@ -57,8 +57,12 @@ public class GerenciadorGerente {
         return gerentes.contains(g);
     }
 
-    public boolean temGerente(String nome) throws PessoaInvalidaException {
-        return gerentes.contains(getGerente(nome));
+    public boolean temGerente(String nome){
+        try {
+            return gerentes.contains(getGerente(nome));
+        } catch (PessoaInvalidaException e) {
+            return false;
+        }
     }
 
     public int getQuantidadeGerentes() {
@@ -66,9 +70,9 @@ public class GerenciadorGerente {
     }
 
     public String getRelatorio(){
-        String out = String.format("%-20s %-20s", "Nome", "Salario");
+        String out = String.format("%-20s %-20s\n", "Nome", "Salario");
         for(Gerente g : gerentes)
-            out+=String.format("%-20s %-20s", g.getNome(), g.getSalario());
+            out+=String.format("%-20s %-20s\n", g.getNome(), g.getSalario());
         return out;
 
     }
