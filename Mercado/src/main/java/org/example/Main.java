@@ -6,268 +6,180 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final int GERENTE = 1, FUNCIONARIO = 2, AUTOMATICO = 3, SAIR = 5;
+    private static final int FUNCIONARIO = 1, GERENTE = 2, AUTOMATICO = 3, SAIR = 0;
 
-    public static Mercado mercado = new Mercado();
-    public static Scanner sc = new Scanner(System.in);
+    private static Mercado mercado;
+    private static Scanner sc =  new Scanner(System.in);
+    private static final String mensagemInicial = """
+    1. Se logar como funcionario
+    2. Se logar como gerente
+    3. Entrar no caixa automatico
+    0. Sair
+    >
+    """;
 
-    public static void main(String args[]){
+    public static void main(String[] args){
 
-        String nome;
-        boolean continuar = true;
-        mercado = mercado.carregaMercado();
+        mercado = new Mercado();
+        int escolha;
 
-        while(continuar) {
-
-            System.out.println("Seja bem vindo ao sistema do mercado!");
-            System.out.print("Escolha algumas opções:\n" +
-                    "1. entrar como gerente\n" +
-                    "2. entrar como funcionario\n" +
-                    "3. pagar com caixa automatico\n"+
-                    "5. sair\n>");
-
-            int escolha = Integer.parseInt(sc.nextLine());
+        do{
+            escolha = intInput(mensagemInicial);
+            final int ENTRAR = 1;
 
             switch (escolha) {
-                case FUNCIONARIO:
-                    System.out.print("Informe seu nome: ");
-                    nome = sc.nextLine();
-                    try {
-                        caixaFuncionario(mercado.getFuncionario(nome));
-                    }catch  (FuncionarioException e){
-                        System.out.println(e.getMessage());
-                        break;
-                    }
-
-                case GERENTE:
-                    System.out.print("Digite seu nome: ");
-                    nome = sc.nextLine();
-                    try{
-                        gerencia(mercado.getGerente(nome));
-                    } catch (FuncionarioException e) {
-                        if(mercado.getFuncionarios().size() == 0) {
-                            criaGerente();
+                case FUNCIONARIO -> {
+                    funcionario();
+                }
+                case GERENTE -> {
+                    if (intInput("1. Entrar como gerente\n0.Sair\n>") == ENTRAR) {
+                        try {
+                            gerente(stringInput("Seu nome: "));
+                        } catch (PessoaInvalidaException e) {
+                            System.out.println(e.getMessage());
                             break;
                         }
                     }
+                }
+                case AUTOMATICO -> {
+                    automatico();
+                }
+                case SAIR -> {
+                    break;
+                }
             }
+        }while(escolha != SAIR);
 
-            mercado.salvar();
-        }
 
     }
 
-    private static void gerencia(Gerente gerente) {
-        if(!gerente.getTipo().equals("gerente"))
-            return;
+    private static void funcionario(){
 
-        boolean sair = false;
+    }
 
+    private static void gerente(String nome) throws PessoaInvalidaException {
+
+        try {
+            if(!mercado.temGerente(nome))
+                return;
+        } catch (PessoaInvalidaException e) {
+            if(mercado.getQuantidadeGerentes() ==  0 && intInput("Não há nenhum gerente no mercado, você deseja adicionar um gerente de nome: "+nome+"\n1. Sim\n2.Não\n>") == 1){
+                int idade = intInput("Informe sua idade: ");
+                double salario = doubleInput("Informe seu salario: ");
+                Gerente gerenteParaAdicionar  = new Gerente(nome, idade, salario);
+                mercado.adicionarGerente(gerenteParaAdicionar);
+                System.out.println("Escolha novamente a opção de se logar como gerente e informe o nome: "+nome);
+                return;
+            }
+            throw e;
+        }
+
+        final int FUNCIONARIOS = 1, GERENTES = 2, CAIXAS_AUT = 3, CAIXAS_MAN = 4, INVENTARIO = 5, VENDAS = 6;
+        String opcoes = """
+        1. Gerenciar Funcionarios
+        2. Gerenciar Gerentes
+        3. Gerenciar Caixas Automaticos
+        4. Gerenciar Caixas Manuais
+        5. Gerenciar Inventario
+        6. Gerenciar Vendas
+        0. Sair
+        >
+                """;
+        int escolha;
         do {
-            System.out.println("Boas vindas, " + gerente.getNome());
-            System.out.print("0. Sair\n" +
-                    "1. Ver inventário\n" +
-                    "2. Adicionar item\n" +
-                    "3. Reabastecer\n" +
-                    "4. Adicionar Funcionario\n" +
-                    "5. Remover Funcionario\n" +
-                    "6. Adicionar Caixa com Funcionario\n" +
-                    "7. Adicionar Caixa automatico\n");
-            System.out.print(">");
-            int escolha = Integer.parseInt(sc.nextLine());
+            escolha = intInput(opcoes);
+            switch (escolha) {
+                case 1:
+                    gerenciarFuncionarios();
 
-            sair = gerenteFuncoes(escolha, gerente);
-
-        }while(!sair);
-
-
-    }
-
-    private static boolean gerenteFuncoes(int escolha, Gerente gerente){
-        final int VER_INVENTARIO = 1, ADICIONAR = 2, REABASTECER = 3, ADICIONAR_FUNCIONARIO =4,
-        REMOVER_FUNCIONARIO = 5, ADICIONAR_CAIXA_FUNCIONARIO = 6, ADICIONAR_CAIXA_AUTOMATICO = 7;
-        String nome;
-        int quantidade;
-        switch(escolha){
-            case VER_INVENTARIO:
-                System.out.println(gerente.verInventario(mercado));
-                break;
-
-            case ADICIONAR:
-                System.out.printf("Nome do produto: ");
-                nome = sc.nextLine().toLowerCase();
-
-                System.out.printf("Quantidade de "+nome+" para adicionar: ");
-                quantidade = Integer.parseInt(sc.nextLine());
-
-                System.out.printf("Preco de "+nome+": ");
-                double preco = Double.parseDouble(sc.nextLine());
-
-                try {
-                    gerente.adicionar(nome, preco, quantidade, mercado);
-                } catch (QuantidadeInvalidaException | ItemInvalidoException e) {
-                    System.out.println(e.getMessage());
-                }
-
-                break;
-
-            case REABASTECER:
-                System.out.printf("Nome do produto: ");
-                nome = sc.nextLine().toLowerCase();
-                System.out.printf("Quantidade de "+nome+" para adicionar: ");
-                quantidade = Integer.parseInt(sc.nextLine());
-
-                try {
-                    gerente.reabastecer(nome, quantidade, mercado);
-                } catch (ItemInvalidoException | QuantidadeInvalidaException e) {
-                    System.out.println(e.getMessage());;
-                }
-                break;
-
-            case ADICIONAR_FUNCIONARIO:
-                nome = perguntaString("Digite o nome do funcionario: ");
-                int idade = perguntaInt("Digite a idade do funcionario: ");
-                double salario = perguntaDouble("Digite o salario do funcionario: ");
-                try {
-                    mercado.adicionaFuncionario(nome, idade, salario);
-                    System.out.println("Funcionario adicionado com sucesso!");
-                } catch (PessoaInvalidaException | FuncionarioException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-
-            case REMOVER_FUNCIONARIO:
-                nome = perguntaString("Digite o nome do funcionario: ");
-                try{
-                    mercado.getFuncionario(nome);
-                    mercado.removeFuncionario(nome);
-                    System.out.println("Funcionario "+nome+" removido com sucesso");
-                    break;
-                } catch (FuncionarioException e) {
-                    System.out.println(e.getMessage());
-                    break;
-                }
-
-            case ADICIONAR_CAIXA_FUNCIONARIO:
-                try {
-                    System.out.println("Caixa de numero: "+gerente.adicionaCaixaFuncionario(mercado)+"foi adicionado com sucesso");
-                } catch (CaixaInvalidoException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-
-            case ADICIONAR_CAIXA_AUTOMATICO:
-
-
-            default:
-                return true;
-        }
-        return false;
-    }
-
-    private static void criaGerente(){
-        System.out.print("Informe o nome do gerente: ");
-        String nome = sc.nextLine();
-
-        System.out.printf("Informe o salario de %s: ", nome);
-        double salario = Double.parseDouble(sc.nextLine());
-
-        System.out.printf("Informe a idade de %s: ", nome);
-        int idade = Integer.parseInt(sc.nextLine());
-
-        try {
-            mercado.adicionaFuncionario(new Gerente(nome, idade, salario));
-        } catch (FuncionarioException | PessoaInvalidaException e) {
-            System.out.println(e.getMessage());;
-        }
-
-    }
-
-    private static void caixaFuncionario(Funcionario funcionario) {
-
-        if(!funcionario.getTipo().equals("funcionario"))
-            return;
-
-        System.out.print("Informe o numero do caixa que você irá trabalhar: ");
-        int numeroCaixa = Integer.parseInt(sc.nextLine());
-        CaixaFuncionario caixa;
-        try {
-            if(mercado.getCaixa(numeroCaixa).getFuncionario() == null){
-                System.out.println("Já existe um funcionario neste caixa, tente outro caixa");
-                return;
             }
-            if(mercado.getCaixa(numeroCaixa).getClass() != CaixaFuncionario.class){
-                System.out.println("O numero informado pertence a um caixa automatico, não é possível que se tenha um funcionario nele");
-                return;
-            }
-            caixa = (CaixaFuncionario) mercado.getCaixa(numeroCaixa);
-        } catch (CaixaInvalidoException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        }while(escolha != SAIR);
 
-        boolean logado = funcionario.getTrabalhando();
+    }
+    private static void gerenciarFuncionarios(){
+        final int RELATORIO = 1, FUNCIONARIOS = 2, ADICIONAR = 3, REMOVER = 4, MUDAR = 5;
+        String opcoes = """
+        1. Ver relatório
+        2. Ver funcionarios
+        3. Adicionar Funcionario
+        4. Remover Funcionario
+        5. Mudar salario
+        0. Sair
+        >
+                """;
+        int escolha;
+        do{
+            escolha = intInput(opcoes);
+            String nome;
+            double salario;
+            switch(escolha){
+                case RELATORIO:
+                    System.out.println(mercado.getRelatorioFuncionarios());
+                    break;
 
-        final int PASSAR = 1, FINALIZAR = 2, CANCELAR = 3, SAIR = 4;
+                case FUNCIONARIOS:
+                    System.out.println(mercado.verFuncionarios());
+                    break;
 
-
-        while (logado){
-            System.out.println("1. Passar produto" +
-                    "2. Finalizar compra" +
-                    "3. Cancelar Compra"+
-                    "3. Sair");
-            int escolha = Integer.parseInt(sc.nextLine());
-
-            switch(escolha) {
-                case PASSAR:
-                    System.out.print("Informe o nome do produto: ");
-                    String nomeProduto = sc.nextLine();
+                case ADICIONAR:
+                    nome = stringInput("Informe o nome do funcionário que você deseja adicionar: ");
+                    int idade = intInput("Digite a idade do funcionário: ");
+                    salario = doubleInput("Digite o salário do funcionário: ");
                     try {
-                        Item item = mercado.getInventario().getItem(nomeProduto);
-                        caixa.vende(item);
-                    } catch (ItemInvalidoException | PessoaInvalidaException | CaixaInvalidoException |
-                             QuantidadeInvalidaException e) {
-                        System.out.println(e);
-                        ;
-                    }
-                    break;
-
-                case FINALIZAR:
-                    double precoParaPagar = caixa.getVendaAtual().getProdutosVendidos().getPrecoTotal();
-                    String escolha2;
-                    do {
-                        escolha2 = sc.nextLine().toLowerCase();
-                        System.out.println("O valor total foi de: R$" + precoParaPagar + "\nDeseja continuar com a compra?\n(s/n)>");
-                    } while (!escolha2.equals("s") && !escolha2.equals("n"));
-
-                    if(escolha2.equals("n"))
+                        Funcionario funcionarioParaAdicionar = new Funcionario(nome, idade, salario);
+                        mercado.adicionarFuncionario(funcionarioParaAdicionar);
+                        System.out.println("Funcionário "+nome+" adicionado com sucesso!");
                         break;
-
-                    try {
-                        caixa.finalizaCompra();
-                    } catch (VendaInvalidaException | PessoaInvalidaException | CaixaInvalidoException e) {
+                    } catch (PessoaInvalidaException | FuncionarioException e) {
                         System.out.println(e.getMessage());
+                        break;
                     }
 
+                case REMOVER:
+                    nome = stringInput("Informe o nome do funcionário que você deseja remover: ");
+                    try {
+                        Funcionario funcionarioParaRemover = mercado.getfuncionario(nome);
+                        mercado.deletaFuncionario(funcionarioParaRemover);
+                        System.out.println("Funcionario removido com sucesso!");
+                        break;
+                    } catch (FuncionarioException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+
+                case MUDAR:
+                    nome = stringInput("Nome do funcionario que você deseja mudar o salario: ");
+                    salario = doubleInput("Quantidade do novo salário: ");
+                    try{
+                        mercado.mudarSalario(nome, salario);
+                        System.out.println("Salario mudado com sucesso");
+                        break;
+                    } catch (FuncionarioException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+                default:
                     break;
+
             }
-        }
 
+        }while(escolha != SAIR);
+    }
+
+    private static void automatico(){
 
     }
 
 
-    private static int perguntaInt(String mensagem){
-        System.out.printf(mensagem);
-        return Integer.parseInt(sc.nextLine());
-    }
-
-    private static double perguntaDouble(String mensagem){
-        System.out.printf(mensagem);
-        return Double.parseDouble(sc.nextLine());
-    }
-
-    private static String perguntaString(String mensagem){
+    private static String stringInput(String message){
+        System.out.printf(message);
         return sc.nextLine();
     }
+    private static int intInput(String message){
+        return Integer.parseInt(stringInput(message));
+    }
+    private static double doubleInput(String message){
+        return Double.parseDouble(stringInput(message));
+    }
+
 }

@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.Exceptions.CaixaInvalidoException;
+import org.example.Exceptions.*;
 
 import java.util.ArrayList;
 
@@ -23,6 +23,10 @@ public class GerenciadorCaixaAutomatico {
 
     public Caixa getCaixa(int posicao){
         return caixas.get(posicao);
+    }
+
+    public Caixa getCaixaNumero(int numero) throws CaixaInvalidoException {
+        return getCaixa(getPosicaoCaixa(numero));
     }
 
     public int getPosicaoCaixa(Caixa caixa) throws CaixaInvalidoException {
@@ -56,6 +60,7 @@ public class GerenciadorCaixaAutomatico {
         }
         return out;
     }
+
 
 
 }

@@ -6,12 +6,11 @@ import java.io.Serializable;
 
 public class Pagavel extends Pessoa {
     private double salario;
-    private String tipo;
 
     public Pagavel(String nome, int idade, double salario, String tipo) throws PessoaInvalidaException {
         super(nome, idade);
         this.salario = salario;
-        this.tipo = tipo;
+        setTipo(tipo);
     }
 
     public double getSalario() {
@@ -22,7 +21,4 @@ public class Pagavel extends Pessoa {
         this.salario = salario;
     }
 
-    public String getTipo(){
-        return tipo;
-    }
 }

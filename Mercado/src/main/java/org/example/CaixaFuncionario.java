@@ -14,7 +14,7 @@ public class CaixaFuncionario extends Caixa{
     private Date horarioDeEntrada;
     Venda vendaAtual;
 
-    public CaixaFuncionario(int numero, Inventario inventario){
+    public CaixaFuncionario(int numero, Inventario inventario) throws CaixaInvalidoException {
         super(numero, inventario);
     }
 

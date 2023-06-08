@@ -11,8 +11,8 @@ import java.util.HashMap;
 public class Funcionario extends Pagavel{
 
     private HashMap<String, ArrayList<Trabalho>> horasTrabalhadas;
-    private Vendas vendasFeitas;
-    private boolean trabalhando;
+    private Vendas vendasFeitas = new Vendas();
+    private boolean trabalhando = false;
     private String tipo = "funcionario";
 
     public Funcionario(String nome, int idade, double salario) throws PessoaInvalidaException {

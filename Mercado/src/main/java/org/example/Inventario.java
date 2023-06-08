@@ -72,7 +72,7 @@ public class Inventario implements Serializable {
         return itens;
     }
 
-    public void adicionaProduto(Item item, int quantidade) throws QuantidadeInvalidaException {
+    public void adicionaItem(Item item, int quantidade) throws QuantidadeInvalidaException {
         try{
             getItem(item.getProduto().getNome()).adiciona(quantidade);
         } catch (ItemInvalidoException e){
@@ -80,25 +80,25 @@ public class Inventario implements Serializable {
             itens.add(item);
         }
     }
-    public void adicionaProduto(Item item) throws QuantidadeInvalidaException {
-        adicionaProduto(item, 1);
+    public void adicionaItem(Item item) throws QuantidadeInvalidaException {
+        adicionaItem(item, 1);
     }
 
-    public void adicionaProduto(String nome, double preco, String codigo) throws ItemInvalidoException, QuantidadeInvalidaException {
+    public void adicionaItem(String nome, double preco, String codigo) throws ItemInvalidoException, QuantidadeInvalidaException {
         Item i = new Item(nome, preco, codigo);
-        adicionaProduto(i);
+        adicionaItem(i);
     }
 
-    public void adicionaProduto(String nome, double preco, String codigo, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
+    public void adicionaItem(String nome, double preco, String codigo, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
         Item i = new Item(nome, preco, quantidade, codigo);
-        adicionaProduto(i);
+        adicionaItem(i);
     }
 
-    public void adicionaDescontoProduto(Item item, int porcentagemDesconto){
+    public void adicionaDescontoItem(Item item, int porcentagemDesconto){
         item.getProduto().setDesconto(porcentagemDesconto);
     }
 
-    public void adicionaDeescontoProduto(String nome, int porcentagemDesconto) throws ItemInvalidoException {
+    public void adicionaDescontoItem(String nome, int porcentagemDesconto) throws ItemInvalidoException {
         getProduto(nome).setDesconto(porcentagemDesconto);
     }
 
@@ -109,6 +109,11 @@ public class Inventario implements Serializable {
     public void removeDesconto(Item item){
         item.getProduto().setDesconto(0);
     }
+
+    public void mudaPreco(String nome, double preco) throws ItemInvalidoException {
+        getItem(nome).getProduto().setPreco(preco);
+    }
+
 
 
 }

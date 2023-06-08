@@ -44,7 +44,7 @@ public class Venda implements Serializable {
     }
 
     public void adicionaProduto(Item item) throws QuantidadeInvalidaException {
-        produtosVendidos.adicionaProduto(item);
+        produtosVendidos.adicionaItem(item);
     }
 
 }

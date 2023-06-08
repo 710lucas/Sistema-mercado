@@ -12,6 +12,7 @@ public class Pessoa implements Serializable {
 
     private String nome;
     private int idade;
+    private String tipo = "pessoa";
 
     public Pessoa(String nome, int idade) throws PessoaInvalidaException {
 
@@ -39,6 +40,14 @@ public class Pessoa implements Serializable {
             throw new PessoaInvalidaException(NOME_INVALIDO);
 
         this.nome = nome;
+    }
+
+    public String getTipo(){
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getNome(){
