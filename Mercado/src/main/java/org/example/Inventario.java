@@ -28,18 +28,14 @@ public class Inventario implements Serializable {
         this.itens = itens;
     }
 
-    public Produto getProduto(String nome) throws ItemInvalidoException {
-        return getItem(nome).getProduto();
+    public Produto getProduto(String codigo) throws ItemInvalidoException {
+        return getItem(codigo).getProduto();
     }
 
 
-    public double getPrecoProduto(String nome) throws ItemInvalidoException {
-        return getProduto(nome).getPreco();
-    }
-
-    public boolean temProduto(String nome) {
+    public boolean temProduto(String codigo) {
         try {
-            getProduto(nome);
+            getProduto(codigo);
             return true;
         } catch (ItemInvalidoException e) {
             return false;
@@ -116,6 +112,12 @@ public class Inventario implements Serializable {
 
     public void mudaPreco(String nome, double preco) throws ItemInvalidoException {
         getItem(nome).getProduto().setPreco(preco);
+    }
+
+    public void mudarCodigo(String nome, String codigo) throws ItemInvalidoException {
+        if(!temProduto(codigo))
+            throw new ItemInvalidoException("Não existe um item com este código");
+        getProduto(codigo).setCodigo(codigo);
     }
 
 

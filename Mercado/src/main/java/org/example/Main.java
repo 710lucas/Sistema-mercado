@@ -108,14 +108,54 @@ public class Main {
                     gerenciarInventario();
                     break;
 
+                case VENDAS:
+                    gerenciarVendas();
+                    break;
+
 
             }
         }while(escolha != SAIR);
 
     }
 
+    private static void gerenciarVendas(){
+        final int RELATORIO = 1, RELATORIO_FUNCIONARIO = 2, RELATORIO_CAIXA = 3;
+        String opcoes = """
+        1. Ver relatorio
+        2. Ver relatorio de vendas de funcionario
+        3. Ver relatorio de vendas de caixa
+        0. Sair
+        >""";
+        int escolha;
+        do{
+            escolha = intInput(opcoes);
+            switch  (escolha){
+                case RELATORIO:
+                    System.out.println(mercado.getRelatorioVendas());
+                    break;
+
+                case RELATORIO_FUNCIONARIO:
+                    String nome = stringInput("Informe o nome do funcionario: ");
+                    try {
+                        System.out.println(mercado.getRelatorioVendasFuncionario(nome));
+                        break;
+                    } catch (FuncionarioException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+
+                case RELATORIO_CAIXA:
+                    int numero = intInput("Digite o numero do caixa: ");
+                    System.out.println(mercado.getRelatorioVendasCaixa(numero));
+
+                default:
+                    break;
+            }
+        }while(escolha != SAIR);
+    }
+
     private static void gerenciarInventario(){
-        final int RELATORIO = 1, ADICIONAR_ITEM = 2, REABASTECER = 3, PROCURAR_ITEM_NOME = 4, PROCURAR_CODIGO = 5, ORDENAR = 6, MUDAR_DESCONTO = 7, REMOVER = 8, RENOMEAR = 9;
+        final int RELATORIO = 1, ADICIONAR_ITEM = 2, REABASTECER = 3, PROCURAR_ITEM_NOME = 4, PROCURAR_CODIGO = 5, ORDENAR = 6, MUDAR_DESCONTO = 7, REMOVER = 8, RENOMEAR = 9, MUDAR_CODIGO = 10;
         String opcoes = """
         1. Ver relatorio
         2. Adicionar item
@@ -126,6 +166,7 @@ public class Main {
         7. Mudar desconto item
         8. Remover produto
         9. Renomear produto
+        10. Mudar Código
         0. Sair
         >""";
         int escolha;
@@ -204,6 +245,24 @@ public class Main {
                 case RENOMEAR:
                     codigo = stringInput("Informe o código do item que você deseja renomear: ");
                     String novoNome = stringInput("Informe o novo nome do item");
+                    try{
+                        mercado.renomeiaItem(codigo, novoNome);
+                        break;
+                    } catch (ItemInvalidoException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+
+                case MUDAR_CODIGO:
+                    codigo = stringInput("Informe o código atual do item o qual você deseja mudar: ");
+                    String novoCodigo = stringInput("Digite o novo código");
+                    try{
+                        mercado.mudarCodigoItem(codigo, novoCodigo);
+                        break;
+                    } catch (ItemInvalidoException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
 
                 default:
                     break;

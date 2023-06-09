@@ -132,18 +132,34 @@ public class Mercado implements Serializable{
     public void removeItem(String codigo) throws ItemInvalidoException {
         inventario.getItens().remove(inventario.getItem(codigo));
     }
-
+    public void renomeiaItem(String codigo, String novoNome) throws ItemInvalidoException {
+        inventario.getItem(codigo).getProduto().setNome(novoNome);
+    }
+    public void mudarCodigoItem(String codigo, String novoCodigo) throws ItemInvalidoException {
+        inventario.mudarCodigo(codigo, novoCodigo);
+    }
     public void ordenarInventario(){
         inventario.setItens(inventario.ordenaItens());
     }
+
+    public String getRelatorioVendas(){
+        return vendas.getRelatorio();
+    }
+
+    public String getRelatorioVendasFuncionario(String nome) throws FuncionarioException {
+        if (!funcionarios.temFuncionario(nome))
+            throw new FuncionarioException("O funcionario escolhido não existe");
+        return vendas.getRelatorioFuncionario(nome);
+    }
+    public String getRelatorioVendasCaixa(int numero) {
+        return vendas.getRelatorioCaixa(numero);
+    }
+
     public void descontoItem(Item item, int descontoPorcentagem){
         inventario.adicionaDescontoItem(item, descontoPorcentagem);
     }
     public void mudarPreco(String nome, double preco) throws ItemInvalidoException {
         inventario.mudaPreco(nome, preco);
-    }
-    public double getPreco(String nome) throws ItemInvalidoException {
-        return inventario.getProduto(nome).getPreco();
     }
 
 

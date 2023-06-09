@@ -109,4 +109,33 @@ public class Vendas implements Serializable {
         }
         return out;
     }
+
+    public String getRelatorioFuncionario(String nome){
+        String out = String.format("%-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa");
+        for (Venda v : vendas){
+            if(v.getPessoa().getNome().equals(nome)) {
+                Calendar c = Calendar.getInstance();
+                c.setTime(v.getData());
+                String dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+                String mes = String.valueOf(c.get(Calendar.MONTH));
+                String ano = String.valueOf(c.get(Calendar.YEAR));
+                out += String.format("%-20s %-20s %-20s\n", dia + "/" + mes + "/ano", v.getPessoa().getTipo() + ":" + v.getPessoa().getNome(), v.getCaixa().getNumero());
+            }
+        }
+        return out;
+    }
+    public String getRelatorioCaixa(int numero){
+        String out = String.format("%-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa");
+        for (Venda v : vendas){
+            if(v.getCaixa().getNumero() == numero) {
+                Calendar c = Calendar.getInstance();
+                c.setTime(v.getData());
+                String dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+                String mes = String.valueOf(c.get(Calendar.MONTH));
+                String ano = String.valueOf(c.get(Calendar.YEAR));
+                out += String.format("%-20s %-20s %-20s\n", dia + "/" + mes + "/ano", v.getPessoa().getTipo() + ":" + v.getPessoa().getNome(), v.getCaixa().getNumero());
+            }
+        }
+        return out;
+    }
 }
