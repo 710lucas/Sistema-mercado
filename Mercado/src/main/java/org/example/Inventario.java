@@ -74,7 +74,7 @@ public class Inventario implements Serializable {
 
     public void adicionaItem(Item item, int quantidade) throws QuantidadeInvalidaException {
         try{
-            getItem(item.getProduto().getNome()).adiciona(quantidade);
+            getItem(item.getProduto().getCodigo()).adiciona(quantidade);
         } catch (ItemInvalidoException e){
             item.setQuantidade(quantidade);
             itens.add(item);

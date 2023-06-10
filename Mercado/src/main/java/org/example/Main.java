@@ -114,10 +114,11 @@ public class Main {
 
                 case REMOVER:
                     codigo = stringInput("Informe o codigo do produto que voce deseja remover: ");
+                    quantidade = intInput("Informe a quantidade que você deseja remover: ");
                     try {
-                        mercado.removerItemCaixa(TIPO_CAIXA, codigo, caixaNumero);
+                        mercado.removerItemCaixa(TIPO_CAIXA, codigo, caixaNumero, quantidade);
                         break;
-                    } catch (CaixaInvalidoException | ItemInvalidoException e) {
+                    } catch (CaixaInvalidoException | ItemInvalidoException | QuantidadeInvalidaException e) {
                         System.out.println("Não foi possível remover item do carrinho");
                         System.out.println(e.getMessage());
                         break;

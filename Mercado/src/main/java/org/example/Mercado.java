@@ -163,8 +163,8 @@ public class Mercado implements Serializable{
             caixa.adicionaCarrinho(inventario.getItem(codigo).getProduto(), quantidade);
         }
     }
-    public void removerItemCaixa(String tipo, String codigo, int numero) throws CaixaInvalidoException, ItemInvalidoException {
-        getCaixaPorTipo(tipo).getCaixaNumero(numero).removeItem(codigo);
+    public void removerItemCaixa(String tipo, String codigo, int numero, int quantidade) throws CaixaInvalidoException, ItemInvalidoException, QuantidadeInvalidaException {
+        getCaixaPorTipo(tipo).getCaixaNumero(numero).removeItem(codigo, quantidade);
     }
     public String verItensCarrinho(String tipo, int numero) throws CaixaInvalidoException, VendaInvalidaException {
         return getCaixaPorTipo(tipo).getCaixaNumero(numero).getVendaAtual().getProdutosVendidos().getRelatorio();
