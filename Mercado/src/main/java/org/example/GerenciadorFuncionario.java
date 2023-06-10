@@ -3,9 +3,10 @@ package org.example;
 import org.example.Exceptions.FuncionarioException;
 import org.example.Exceptions.PessoaInvalidaException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GerenciadorFuncionario {
+public class GerenciadorFuncionario implements Serializable {
     private ArrayList<Funcionario> funcionarios = new ArrayList<>();
 
     public void adicionarFuncionario(Funcionario f) throws FuncionarioException {

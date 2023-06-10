@@ -7,17 +7,33 @@ import java.util.Date;
 public class CaixaFuncionario extends Caixa{
 
     private Inventario  inventario;
-    private Funcionario funcionario;
-    private double dinheiro;
-    Vendas vendas;
+    private Funcionario pessoa;
     private int numero;
     private Date horarioDeEntrada;
-    Venda vendaAtual;
 
     public CaixaFuncionario(int numero, Inventario inventario) throws CaixaInvalidoException {
         super(numero, inventario);
+        setDinheiro(0);
+        setVendaAtual(null);
     }
 
+    @Override
+    public void adicionaCarrinho(Produto produto, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException, PessoaInvalidaException, CaixaInvalidoException, VendaInvalidaException {
+        if(produto == null)
+            throw new ItemInvalidoException();
+
+        try{
+            getVendaAtual();
+        } catch (VendaInvalidaException e) {
+            setVendaAtual(new Venda(this.pessoa, this));
+        }
+
+        Item item = new Item(produto, quantidade);
+        item.setQuantidade(quantidade);
+
+        getVendaAtual().adicionaProduto(item);
+
+    }
 
 
     public void login(Funcionario funcionario) throws FuncionarioException, PessoaInvalidaException, CaixaInvalidoException {
@@ -27,9 +43,8 @@ public class CaixaFuncionario extends Caixa{
         horarioDeEntrada = new Date();
 
         funcionario.setTrabalhando(true);
-        this.funcionario = funcionario;
+        this.pessoa = funcionario;
 
-        vendaAtual = new Venda(this.funcionario, this);
     }
 
     public void logout(Funcionario funcionario) throws FuncionarioException {
@@ -38,17 +53,20 @@ public class CaixaFuncionario extends Caixa{
 
         funcionario.adicionaHorasTrabalhadas(horarioDeEntrada, new Date());
         funcionario.setTrabalhando(false);
-        this.funcionario = funcionario;
+        this.pessoa = funcionario;
     }
 
 
+    @Override
     public double finalizaCompra() throws VendaInvalidaException, PessoaInvalidaException, CaixaInvalidoException {
-        double dinheiroDaCompra = vendaAtual.getProdutosVendidos().getPrecoTotal();
-        vendas.adicionaVenda(vendaAtual);
-        funcionario.adicionaVendas(vendaAtual);
+        double dinheiroDaCompra = getVendaAtual().getProdutosVendidos().getPrecoTotal();
+        getVendas().adicionaVenda(getVendaAtual());
+        setDinheiro(getDinheiro()+getVendaAtual().getProdutosVendidos().getPrecoTotal());
 
-        dinheiro+=vendaAtual.getProdutosVendidos().getPrecoTotal();
-        vendaAtual = new Venda(funcionario, this);
+        this.pessoa.adicionaVendas(getVendaAtual());
+
+        setVendaAtual(null);
+        this.pessoa = null;
 
         return dinheiroDaCompra;
     }

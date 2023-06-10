@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Item implements Comparable<Item>, Serializable {
 
     private Produto produto;
-    private int quantidade;
+    private int quantidade = 1;
 
     public Item(Produto p, int quantidade){
         this.produto = p;

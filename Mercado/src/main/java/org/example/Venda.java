@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.Exceptions.CaixaInvalidoException;
+import org.example.Exceptions.ItemInvalidoException;
 import org.example.Exceptions.PessoaInvalidaException;
 import org.example.Exceptions.QuantidadeInvalidaException;
 
@@ -25,6 +26,8 @@ public class Venda implements Serializable {
         this.caixa = caixa;
 
         data = new Date();
+
+        produtosVendidos = new Inventario();
     }
 
     public Date getData(){
@@ -46,5 +49,6 @@ public class Venda implements Serializable {
     public void adicionaProduto(Item item) throws QuantidadeInvalidaException {
         produtosVendidos.adicionaItem(item);
     }
+
 
 }

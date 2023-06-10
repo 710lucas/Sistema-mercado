@@ -10,13 +10,14 @@ import java.util.HashMap;
 
 public class Funcionario extends Pagavel{
 
-    private HashMap<String, ArrayList<Trabalho>> horasTrabalhadas;
+    private HashMap<String, Trabalho> horasTrabalhadas;
     private Vendas vendasFeitas = new Vendas();
     private boolean trabalhando = false;
     private String tipo = "funcionario";
 
     public Funcionario(String nome, int idade, double salario) throws PessoaInvalidaException {
         super(nome, idade, salario, "funcionario");
+        horasTrabalhadas = new HashMap<>();
     }
 
     public void adicionaVendas(Venda venda) throws VendaInvalidaException {
@@ -31,7 +32,7 @@ public class Funcionario extends Pagavel{
         String mes = String.valueOf(c.get(Calendar.MONTH));
         String ano = String.valueOf(c.get(Calendar.YEAR));
         String data = dia+"/"+mes+"/"+ano;
-        horasTrabalhadas.get(data).add(t);
+        horasTrabalhadas.put(data, t);
     }
 
     public int getHorasTrabalhadas(Date data){
@@ -42,19 +43,14 @@ public class Funcionario extends Pagavel{
         int ano = c.get(Calendar.YEAR);
         String dataFormatada = dia+"/"+mes+"/"+ano;
         int output = 0;
-        for(Trabalho trabalho : horasTrabalhadas.get(dataFormatada)){
-            output += trabalho.calculaHorasTrabalhadas();
-        }
+        output += horasTrabalhadas.get(dataFormatada).calculaHorasTrabalhadas();
         return output;
     }
 
     public int getTotalHorasTrabalhadas(){
         int output = 0;
-        for(ArrayList<Trabalho> trabalhos : horasTrabalhadas.values()){
-            for(Trabalho trabalho : trabalhos){
-                output += trabalho.calculaHorasTrabalhadas();
-            }
-        }
+        for(Trabalho t : horasTrabalhadas.values())
+            output+= t.calculaHorasTrabalhadas();
         return output;
     }
 

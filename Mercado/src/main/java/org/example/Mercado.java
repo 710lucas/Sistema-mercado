@@ -7,12 +7,22 @@ import java.io.*;
 
 public class Mercado implements Serializable{
 
-    private GerenciadorGerente gerente = new GerenciadorGerente();
-    private GerenciadorFuncionario funcionarios = new GerenciadorFuncionario();
-    private Inventario inventario = new Inventario();
-    private GerenciadorCaixaAutomatico caixaAutomatico = new GerenciadorCaixaAutomatico();
-    private GerenciadorCaixaFuncionario caixaFuncionario = new GerenciadorCaixaFuncionario();
-    private Vendas vendas = new Vendas();
+    private GerenciadorGerente gerente;
+    private GerenciadorFuncionario funcionarios;
+    private Inventario inventario;
+    private GerenciadorCaixaAutomatico caixaAutomatico;
+    private GerenciadorCaixaFuncionario caixaFuncionario;
+    private Vendas vendas;
+    @Serial
+    private static final long serialVersionUID = 1;
+    public Mercado(){
+        inventario = new Inventario();
+        gerente = new GerenciadorGerente();
+        funcionarios = new GerenciadorFuncionario();
+        caixaAutomatico = new GerenciadorCaixaAutomatico();
+        caixaFuncionario = new GerenciadorCaixaFuncionario();
+        vendas = new Vendas();
+    }
 
     public void adicionarGerente(Gerente gerente) throws PessoaInvalidaException {
         this.gerente.adicionarGerente(gerente);
@@ -58,6 +68,17 @@ public class Mercado implements Serializable{
     public void deletaFuncionario(String nome) throws FuncionarioException {
         deletaFuncionario(getfuncionario(nome));
     }
+    public boolean temFuncionario(String nome){
+        return funcionarios.temFuncionario(nome);
+    }
+
+    public void loginFuncionario(String nome, int numeroCaixa) throws CaixaInvalidoException, FuncionarioException, PessoaInvalidaException {
+        caixaFuncionario.getCaixaFuncionario(numeroCaixa).login(funcionarios.getFuncionario(nome));
+    }
+    public void logoutFuncionario(String nome, int numeroCaixa) throws FuncionarioException, CaixaInvalidoException {
+        caixaFuncionario.getCaixaFuncionario(numeroCaixa).logout(funcionarios.getFuncionario(nome));
+    }
+
     public String getRelatorioFuncionarios(){
         return funcionarios.getRelatorio();
     }
@@ -93,13 +114,16 @@ public class Mercado implements Serializable{
     public void adicionarCaixaManual() throws CaixaInvalidoException {
         caixaFuncionario.adicionaCaixa(caixaFuncionario.getQuantidadeCaixas(), inventario);
     }
+
     public void removerCaixaManual(int numero) throws CaixaInvalidoException {
         caixaFuncionario.removeCaixa(numero);
+    }
+    public CaixaFuncionario getCaixaManualNumero(int numero) throws CaixaInvalidoException {
+        return caixaFuncionario.getCaixaNumero(numero);
     }
     public String getRelatorioCaixaManual(){
         return caixaFuncionario.getRelatorio();
     }
-
     public String getRelatorioInventario(){
        return inventario.getRelatorio();
     }
@@ -124,6 +148,46 @@ public class Mercado implements Serializable{
                 out+=String.format("%-20s %-20s %-20s %-20s %-20s\n",i.getProduto().getNome(), i.getProduto().getCodigo(), i.getQuantidade(), i.getProduto().getPreco(), i.getProduto().getDesconto(), i.calculaValorTotal());
         }
         return out;
+    }
+    public void adicionarItemCarrinho(String tipo, String codigo, int numero, int quantidade) throws CaixaInvalidoException, ItemInvalidoException, PessoaInvalidaException, QuantidadeInvalidaException, VendaInvalidaException {
+        if(quantidade > inventario.getItem(codigo).getQuantidade() )
+            throw new QuantidadeInvalidaException("Não há uma quantidade suficiente de itens para adicionar ao carrinho.");
+        Caixa caixa = getCaixaPorTipo(tipo).getCaixaNumero(numero);
+        try {
+            if (caixa.getVendaAtual().getProdutosVendidos().temProduto(codigo)) {
+                if (caixa.getVendaAtual().getProdutosVendidos().getItem(codigo).getQuantidade() + quantidade > inventario.getItem(codigo).getQuantidade())
+                    throw new QuantidadeInvalidaException("Não há uma quantidade suficiente de itens para adicionar ao carrinho.");
+                caixa.getVendaAtual().getProdutosVendidos().getItem(codigo).adiciona(quantidade);
+            }
+        } catch(VendaInvalidaException e) {
+            caixa.adicionaCarrinho(inventario.getItem(codigo).getProduto(), quantidade);
+        }
+    }
+    public void removerItemCaixa(String tipo, String codigo, int numero) throws CaixaInvalidoException, ItemInvalidoException {
+        getCaixaPorTipo(tipo).getCaixaNumero(numero).removeItem(codigo);
+    }
+    public String verItensCarrinho(String tipo, int numero) throws CaixaInvalidoException, VendaInvalidaException {
+        return getCaixaPorTipo(tipo).getCaixaNumero(numero).getVendaAtual().getProdutosVendidos().getRelatorio();
+    }
+
+    public double finalizarCompraCaixa(String tipo, int numero) throws CaixaInvalidoException, PessoaInvalidaException, VendaInvalidaException, ItemInvalidoException {
+        GerenciadorCaixaAutomatico gerenciador = getCaixaPorTipo(tipo);
+        for(Item i :gerenciador.getCaixaNumero(numero).getVendaAtual().getProdutosVendidos().getItens())
+            for(int j = 0; j<i.getQuantidade(); j++)
+                inventario.getItem(i.getProduto().getCodigo()).vende();
+        vendas.adicionaVenda(gerenciador.getCaixa(numero).getVendaAtual());
+        return gerenciador.getCaixaNumero(numero).finalizaCompra();
+    }
+
+    private GerenciadorCaixaAutomatico getCaixaPorTipo(String tipo) throws CaixaInvalidoException {
+        switch (tipo){
+            case "manual":
+                return this.caixaFuncionario;
+            case "automatico":
+                return this.caixaAutomatico;
+        }
+        throw new CaixaInvalidoException("O tipo de caixa informado deve ser manual ou automatico");
+
     }
     public void descontoItem(String codigo, int desconto) throws ItemInvalidoException {
         inventario.getItem(codigo).getProduto().setDesconto(desconto);
@@ -162,5 +226,29 @@ public class Mercado implements Serializable{
         inventario.mudaPreco(nome, preco);
     }
 
+    public static Mercado recuperaMercado(String nomeArquivo){
+        try {
+            ObjectInputStream in = new ObjectInputStream((new FileInputStream(nomeArquivo)));
+            Mercado recuperado = (Mercado) in.readObject();
+            in.close();
+            return recuperado;
+        } catch (IOException e) {
+            return new Mercado();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void salvaMercado(String nomeArquivo){
+        try {
+            ObjectOutputStream out = new ObjectOutputStream((new FileOutputStream(nomeArquivo)));
+            out.writeObject(this);
+            out.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
 
 }

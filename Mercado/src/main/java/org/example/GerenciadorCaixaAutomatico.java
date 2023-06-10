@@ -2,9 +2,10 @@ package org.example;
 
 import org.example.Exceptions.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GerenciadorCaixaAutomatico {
+public class GerenciadorCaixaAutomatico implements Serializable {
     private ArrayList<Caixa> caixas = new ArrayList<>();
 
     public void adicionaCaixa(int numero, Inventario inventario) throws CaixaInvalidoException {
@@ -55,6 +56,10 @@ public class GerenciadorCaixaAutomatico {
 
     public int getQuantidadeCaixas(){
         return caixas.size();
+    }
+
+    public ArrayList<Caixa> getCaixas() {
+        return caixas;
     }
 
     public String getRelatorio(){

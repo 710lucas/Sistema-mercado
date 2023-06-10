@@ -21,6 +21,7 @@ public class Caixa implements Serializable {
             throw new CaixaInvalidoException("O numero de um caixa nao pode ser menor que 0");
         this.inventario = inventario;
         this.numero = numero;
+        vendaAtual = null;
     }
 
     public void login(String nome, int idade) throws PessoaInvalidaException {
@@ -40,15 +41,23 @@ public class Caixa implements Serializable {
     }
 
 
-    public void vende(Item item) throws ItemInvalidoException, QuantidadeInvalidaException, PessoaInvalidaException, CaixaInvalidoException {
-        if(item == null)
+    public void adicionaCarrinho(Produto produto, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException, PessoaInvalidaException, CaixaInvalidoException, VendaInvalidaException {
+        if(produto == null)
             throw new ItemInvalidoException();
 
-        if(vendaAtual == null)
+        if(vendaAtual == null) {
             vendaAtual = new Venda(this.pessoa, this);
+        }
+
+        Item item = new Item(produto, quantidade);
+        item.setQuantidade(quantidade);
 
         vendaAtual.adicionaProduto(item);
 
+    }
+
+    public void removeItem(String codigo) throws ItemInvalidoException {
+        inventario.removeItem(inventario.getItem(codigo));
     }
 
     public double finalizaCompra() throws VendaInvalidaException, PessoaInvalidaException, CaixaInvalidoException {
@@ -56,10 +65,6 @@ public class Caixa implements Serializable {
 
         vendas.adicionaVenda(vendaAtual);
         dinheiro+=vendaAtual.getProdutosVendidos().getPrecoTotal();
-
-        for(Item i : vendaAtual.getProdutosVendidos().getItens()){
-            i.vende();
-        }
 
         vendaAtual = null;
         this.pessoa = null;
@@ -84,6 +89,10 @@ public class Caixa implements Serializable {
         this.numero = numero;
     }
 
+    public void setVendaAtual(Venda venda){
+        this.vendaAtual = venda;
+    }
+
     public Pessoa getFuncionario() {
         return pessoa;
     }
@@ -92,7 +101,14 @@ public class Caixa implements Serializable {
         return numero;
     }
 
-    public Venda getVendaAtual() {
+    public Venda getVendaAtual() throws VendaInvalidaException {
+        if(vendaAtual == null){
+            throw new VendaInvalidaException("Ainda não há uma venda ocorrendo");
+        }
         return vendaAtual;
+    }
+
+    public Inventario getCarrinho(){
+        return inventario;
     }
 }

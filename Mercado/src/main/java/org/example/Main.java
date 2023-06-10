@@ -2,7 +2,6 @@ package org.example;
 
 import org.example.Exceptions.*;
 
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
@@ -11,6 +10,7 @@ public class Main {
 
     private static Mercado mercado;
     private static Scanner sc =  new Scanner(System.in);
+    private static final String ARQUIVO = "MercadoSave.sav";
     private static final String mensagemInicial = """
     1. Se logar como funcionario
     2. Se logar como gerente
@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String[] args){
 
-        mercado = new Mercado();
+        mercado = Mercado.recuperaMercado(ARQUIVO);
         int escolha;
 
         do{
@@ -29,21 +29,23 @@ public class Main {
 
             switch (escolha) {
                 case FUNCIONARIO -> {
-                    funcionario();
+                    funcionario(stringInput("Seu nome: "));
+                    mercado.salvaMercado(ARQUIVO);
                 }
                 case GERENTE -> {
                     try {
                         gerente(stringInput("Seu nome: "));
                     } catch (PessoaInvalidaException | GerenteJaExisteException e) {
                         System.out.println(e.getMessage());
-                        break;
                     }
+                    mercado.salvaMercado(ARQUIVO);
                 }
                 case AUTOMATICO -> {
                     automatico();
+                    mercado.salvaMercado(ARQUIVO);
                 }
                 case SAIR -> {
-                    break;
+                    mercado.salvaMercado(ARQUIVO);
                 }
             }
         }while(escolha != SAIR);
@@ -51,7 +53,93 @@ public class Main {
 
     }
 
-    private static void funcionario(){
+    private static void funcionario(String nome){
+        final String TIPO_CAIXA = "manual";
+        if(!mercado.temFuncionario(nome)) {
+            System.out.println("Não foi possivel encontrar um funcionario com este nome");
+            return;
+        }
+
+        int caixaNumero = intInput("Informe o número do caixa que você irá ficar: ");
+        try {
+            mercado.getCaixaManualNumero(caixaNumero);
+        } catch (CaixaInvalidoException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        try{
+            mercado.loginFuncionario(nome, caixaNumero);
+        } catch (PessoaInvalidaException | CaixaInvalidoException | FuncionarioException e) {
+            System.out.println(e.getMessage());
+        }
+
+        final int ADICIONAR = 1, REMOVER = 2, FINALIZAR = 3, PESQUISAR = 4;
+        String opcoes = """
+        1. Adicionar item ao carrinho
+        2. Remover item do carrinho
+        3. Finalizar compra
+        4. Pesquisar codigo item
+        0. Sair
+        >""";
+        int escolha;
+        do{
+            try {
+                System.out.println(mercado.verItensCarrinho(TIPO_CAIXA, caixaNumero));
+            } catch (CaixaInvalidoException e) {
+                System.out.println(e.getMessage());
+                return;
+            } catch (VendaInvalidaException e) {
+                System.out.println(e.getMessage());
+            }
+
+            escolha = intInput(opcoes);
+            String codigo;
+            int quantidade;
+            switch(escolha){
+                case ADICIONAR:
+                    codigo = stringInput("Informe o codigo do produto que voce deseja adicionar ao carrinho: ");
+                    quantidade = intInput("Informe a quantidade que será adicionada ao carrinho: ");
+                    try{
+                        mercado.adicionarItemCarrinho(TIPO_CAIXA, codigo, caixaNumero, quantidade);
+                        System.out.println("Item adicionado com sucesso");
+                        break;
+                    } catch (ItemInvalidoException | PessoaInvalidaException | CaixaInvalidoException | VendaInvalidaException e) {
+                        System.out.println("Não foi possivel adiconar o item ao carrinho:\n"+e.getMessage());
+                        break;
+                    } catch (QuantidadeInvalidaException e){
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+
+                case REMOVER:
+                    codigo = stringInput("Informe o codigo do produto que voce deseja remover: ");
+                    try {
+                        mercado.removerItemCaixa(TIPO_CAIXA, codigo, caixaNumero);
+                        break;
+                    } catch (CaixaInvalidoException | ItemInvalidoException e) {
+                        System.out.println("Não foi possível remover item do carrinho");
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+
+                case FINALIZAR:
+                    try{
+                        double total = mercado.finalizarCompraCaixa(TIPO_CAIXA, caixaNumero);
+                        System.out.println("Compra finalizada com total de R$"+total);
+
+                    } catch (PessoaInvalidaException | CaixaInvalidoException | VendaInvalidaException | ItemInvalidoException e) {
+                        System.out.println(e.getMessage());
+                    }
+
+            }
+
+        }while(escolha != SAIR);
+        try {
+            mercado.logoutFuncionario(nome, caixaNumero);
+        } catch (FuncionarioException | CaixaInvalidoException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -115,7 +203,6 @@ public class Main {
 
             }
         }while(escolha != SAIR);
-
     }
 
     private static void gerenciarVendas(){
@@ -222,7 +309,7 @@ public class Main {
 
                 case MUDAR_DESCONTO:
                     codigo = stringInput("Informe o código do item que você deseja mudar o desconto: ");
-                    int desconto = intInput("Informe a porcentagem do desconto que será dado (ex.: 15 para 15%): ");
+                    int desconto = intInput("Informe a porcentagem do desconto que será dado (ex.: 15 para 15 por cento): ");
                     try {
                         mercado.descontoItem(codigo, desconto);
                         break;
@@ -255,7 +342,7 @@ public class Main {
 
                 case MUDAR_CODIGO:
                     codigo = stringInput("Informe o código atual do item o qual você deseja mudar: ");
-                    String novoCodigo = stringInput("Digite o novo código");
+                    String novoCodigo = stringInput("Digite o novo código: ");
                     try{
                         mercado.mudarCodigoItem(codigo, novoCodigo);
                         break;
@@ -277,8 +364,8 @@ public class Main {
         final int RELATORIO = 1, ADICIONAR = 2, REMOVER = 3;
         String opcoes = """
         1. Ver relatorio
-        2. Adicionar caixa automatico
-        3. Remover caixa automatico
+        2. Adicionar caixa manual
+        3. Remover caixa manual
         0. Sair
         >""";
         int escolha;

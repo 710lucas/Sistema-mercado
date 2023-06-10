@@ -105,7 +105,7 @@ public class Vendas implements Serializable {
             String dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
             String mes = String.valueOf(c.get(Calendar.MONTH));
             String ano = String.valueOf(c.get(Calendar.YEAR));
-            out+=String.format("%-20s %-20s %-20s\n", dia+"/"+mes+"/ano", v.getPessoa().getTipo()+":"+v.getPessoa().getNome(), v.getCaixa().getNumero());
+            out+=String.format("%-20s %-20s %-20s\n", dia+"/"+mes+"/"+ano, v.getPessoa().getTipo()+":"+v.getPessoa().getNome(), v.getCaixa().getNumero());
         }
         return out;
     }
@@ -119,7 +119,7 @@ public class Vendas implements Serializable {
                 String dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
                 String mes = String.valueOf(c.get(Calendar.MONTH));
                 String ano = String.valueOf(c.get(Calendar.YEAR));
-                out += String.format("%-20s %-20s %-20s\n", dia + "/" + mes + "/ano", v.getPessoa().getTipo() + ":" + v.getPessoa().getNome(), v.getCaixa().getNumero());
+                out += String.format("%-20s %-20s %-20s\n", dia + "/" + mes + "/"+ano, v.getPessoa().getTipo() + ":" + v.getPessoa().getNome(), v.getCaixa().getNumero());
             }
         }
         return out;

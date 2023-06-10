@@ -81,7 +81,7 @@ public class Inventario implements Serializable {
         }
     }
     public void adicionaItem(Item item) throws QuantidadeInvalidaException {
-        adicionaItem(item, 1);
+        adicionaItem(item, item.getQuantidade());
     }
 
     public void adicionaItem(String nome, double preco, String codigo) throws ItemInvalidoException, QuantidadeInvalidaException {
@@ -91,7 +91,13 @@ public class Inventario implements Serializable {
 
     public void adicionaItem(String nome, double preco, String codigo, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
         Item i = new Item(nome, preco, quantidade, codigo);
-        adicionaItem(i);
+        adicionaItem(i, quantidade);
+    }
+
+    public void removeItem(Item item) throws ItemInvalidoException {
+        if(item == null)
+            throw new ItemInvalidoException();
+        itens.remove(item);
     }
 
     public void adicionaDescontoItem(Item item, int porcentagemDesconto){
@@ -114,10 +120,10 @@ public class Inventario implements Serializable {
         getItem(nome).getProduto().setPreco(preco);
     }
 
-    public void mudarCodigo(String nome, String codigo) throws ItemInvalidoException {
+    public void mudarCodigo(String codigo, String novoCodigo) throws ItemInvalidoException {
         if(!temProduto(codigo))
             throw new ItemInvalidoException("Não existe um item com este código");
-        getProduto(codigo).setCodigo(codigo);
+        getProduto(codigo).setCodigo(novoCodigo);
     }
 
 
