@@ -72,8 +72,11 @@ public class Mercado implements Serializable{
         return funcionarios.temFuncionario(nome);
     }
 
-    public void loginFuncionario(String nome, int numeroCaixa) throws CaixaInvalidoException, FuncionarioException, PessoaInvalidaException {
-        caixaFuncionario.getCaixaFuncionario(numeroCaixa).login(funcionarios.getFuncionario(nome));
+    public void loginCaixa(String nome, int numeroCaixa, String tipo) throws CaixaInvalidoException, FuncionarioException, PessoaInvalidaException {
+        if(tipo.equals("manual"))
+            caixaFuncionario.getCaixaFuncionario(numeroCaixa).login(funcionarios.getFuncionario(nome));
+        else
+            caixaAutomatico.getCaixaNumero(numeroCaixa).login(nome, 1);
     }
     public void logoutFuncionario(String nome, int numeroCaixa) throws FuncionarioException, CaixaInvalidoException {
         caixaFuncionario.getCaixaFuncionario(numeroCaixa).logout(funcionarios.getFuncionario(nome));
@@ -118,8 +121,8 @@ public class Mercado implements Serializable{
     public void removerCaixaManual(int numero) throws CaixaInvalidoException {
         caixaFuncionario.removeCaixa(numero);
     }
-    public CaixaFuncionario getCaixaManualNumero(int numero) throws CaixaInvalidoException {
-        return caixaFuncionario.getCaixaNumero(numero);
+    public Caixa getCaixaNumero(int numero, String tipo) throws CaixaInvalidoException {
+        return getCaixaPorTipo(tipo).getCaixaNumero(numero);
     }
     public String getRelatorioCaixaManual(){
         return caixaFuncionario.getRelatorio();
@@ -136,7 +139,7 @@ public class Mercado implements Serializable{
     public String pesquisaItemNome(String nome){
         String out = String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Nome", "Codigo", "Quantidade", "Preco", "Desconto (%)", "Valor total");
         for(Item i : inventario.getItens()){
-            if(i.getProduto().getNome().contains(nome))
+            if(i.getProduto().getNome().toLowerCase().contains(nome.toLowerCase()))
                 out+=String.format("%-20s %-20s %-20s %-20s %-20s\n",i.getProduto().getNome(), i.getProduto().getCodigo(), i.getQuantidade(), i.getProduto().getPreco(), i.getProduto().getDesconto(), i.calculaValorTotal());
         }
         return out;

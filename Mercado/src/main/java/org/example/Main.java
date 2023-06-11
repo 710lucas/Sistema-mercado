@@ -29,7 +29,8 @@ public class Main {
 
             switch (escolha) {
                 case FUNCIONARIO -> {
-                    funcionario(stringInput("Seu nome: "));
+                    String nome = stringInput("Seu nome:");
+                    caixa(nome, "manual");
                     mercado.salvaMercado(ARQUIVO);
                 }
                 case GERENTE -> {
@@ -41,7 +42,8 @@ public class Main {
                     mercado.salvaMercado(ARQUIVO);
                 }
                 case AUTOMATICO -> {
-                    automatico();
+                    String nome = stringInput("Seu nome:");
+                    caixa(nome, "automatico");
                     mercado.salvaMercado(ARQUIVO);
                 }
                 case SAIR -> {
@@ -53,23 +55,23 @@ public class Main {
 
     }
 
-    private static void funcionario(String nome){
-        final String TIPO_CAIXA = "manual";
-        if(!mercado.temFuncionario(nome)) {
+    private static void caixa(String nome, String TIPO_CAIXA){
+        if(!mercado.temFuncionario(nome) && TIPO_CAIXA.equals("manual")) {
             System.out.println("Não foi possivel encontrar um funcionario com este nome");
             return;
         }
 
         int caixaNumero = intInput("Informe o número do caixa que você irá ficar: ");
         try {
-            mercado.getCaixaManualNumero(caixaNumero);
+            if(mercado.getCaixaNumero(caixaNumero, TIPO_CAIXA).getFuncionario() != null)
+                System.out.println("Já existe um usuário utilizando este caixa.");
         } catch (CaixaInvalidoException e) {
             System.out.println(e.getMessage());
             return;
         }
 
         try{
-            mercado.loginFuncionario(nome, caixaNumero);
+            mercado.loginCaixa(nome, caixaNumero, TIPO_CAIXA);
         } catch (PessoaInvalidaException | CaixaInvalidoException | FuncionarioException e) {
             System.out.println(e.getMessage());
         }
@@ -79,13 +81,15 @@ public class Main {
         1. Adicionar item ao carrinho
         2. Remover item do carrinho
         3. Finalizar compra
-        4. Pesquisar codigo item
+        4. Pesquisar codigo do item pelo nome
         0. Sair
         >""";
         int escolha;
         do{
             try {
+                System.out.println("Carrinho atual: ");
                 System.out.println(mercado.verItensCarrinho(TIPO_CAIXA, caixaNumero));
+                System.out.println("==================================================================================================");
             } catch (CaixaInvalidoException e) {
                 System.out.println(e.getMessage());
                 return;
@@ -128,17 +132,27 @@ public class Main {
                     try{
                         double total = mercado.finalizarCompraCaixa(TIPO_CAIXA, caixaNumero);
                         System.out.println("Compra finalizada com total de R$"+total);
+                        break;
 
                     } catch (PessoaInvalidaException | CaixaInvalidoException | VendaInvalidaException | ItemInvalidoException e) {
                         System.out.println(e.getMessage());
+                        break;
                     }
+
+                case PESQUISAR:
+                    String nomePesquisa = stringInput("Informe uma parte ou o nome completo do item que deseja procurar: ");
+                    System.out.println("Resultado da pesquisa:");
+                    System.out.println(mercado.pesquisaItemNome(nomePesquisa));
+                    break;
+
 
             }
 
         }while(escolha != SAIR);
         try {
-            mercado.logoutFuncionario(nome, caixaNumero);
-        } catch (FuncionarioException | CaixaInvalidoException e) {
+            if(mercado.getCaixaNumero(caixaNumero, TIPO_CAIXA).getVendaAtual() == null)
+                mercado.logoutFuncionario(nome, caixaNumero);
+        } catch (FuncionarioException | CaixaInvalidoException | VendaInvalidaException e) {
             System.out.println(e.getMessage());
         }
 

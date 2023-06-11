@@ -66,7 +66,6 @@ public class CaixaFuncionario extends Caixa{
         this.pessoa.adicionaVendas(getVendaAtual());
 
         setVendaAtual(null);
-        this.pessoa = null;
 
         return dinheiroDaCompra;
     }

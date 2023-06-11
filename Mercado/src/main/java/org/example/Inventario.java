@@ -100,6 +100,10 @@ public class Inventario implements Serializable {
         itens.remove(item);
     }
 
+    public void removeItem(String codigo) throws ItemInvalidoException {
+        itens.remove(getItem(codigo));
+    }
+
     public void adicionaDescontoItem(Item item, int porcentagemDesconto){
         item.getProduto().setDesconto(porcentagemDesconto);
     }
