@@ -62,26 +62,21 @@ public class Main {
         }
 
         int caixaNumero = intInput("Informe o número do caixa que você irá ficar: ");
-        try {
-            if(mercado.getCaixaNumero(caixaNumero, TIPO_CAIXA).getFuncionario() != null)
-                System.out.println("Já existe um usuário utilizando este caixa.");
-        } catch (CaixaInvalidoException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
 
         try{
             mercado.loginCaixa(nome, caixaNumero, TIPO_CAIXA);
         } catch (PessoaInvalidaException | CaixaInvalidoException | FuncionarioException e) {
             System.out.println(e.getMessage());
+            return;
         }
 
-        final int ADICIONAR = 1, REMOVER = 2, FINALIZAR = 3, PESQUISAR = 4;
+        final int ADICIONAR = 1, REMOVER = 2, FINALIZAR = 3, PESQUISAR = 4, CANCELAR = 5;
         String opcoes = """
         1. Adicionar item ao carrinho
         2. Remover item do carrinho
         3. Finalizar compra
         4. Pesquisar codigo do item pelo nome
+        5. Cancelar compra
         0. Sair
         >""";
         int escolha;
@@ -145,14 +140,32 @@ public class Main {
                     System.out.println(mercado.pesquisaItemNome(nomePesquisa));
                     break;
 
+                case CANCELAR:
+                    try {
+                        mercado.cancelaCompra(TIPO_CAIXA, caixaNumero);
+                    } catch (CaixaInvalidoException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+
+                default:
+                    try {
+                        if(mercado.getCaixaNumero(caixaNumero, TIPO_CAIXA).getVendaAtual()!=null) {
+                            escolha = -1;
+                            System.out.println("Há uma venda em andamento, finalize ou cancele a compra para que você possa sair");
+                        }
+                    } catch (VendaInvalidaException | CaixaInvalidoException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+
 
             }
 
         }while(escolha != SAIR);
         try {
-            if(mercado.getCaixaNumero(caixaNumero, TIPO_CAIXA).getVendaAtual() == null)
-                mercado.logoutFuncionario(nome, caixaNumero);
-        } catch (FuncionarioException | CaixaInvalidoException | VendaInvalidaException e) {
+            mercado.logoutFuncionario(nome, caixaNumero);
+        } catch (FuncionarioException | CaixaInvalidoException e) {
             System.out.println(e.getMessage());
         }
 

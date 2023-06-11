@@ -108,12 +108,12 @@ public class Inventario implements Serializable {
         item.getProduto().setDesconto(porcentagemDesconto);
     }
 
-    public void adicionaDescontoItem(String nome, int porcentagemDesconto) throws ItemInvalidoException {
-        getProduto(nome).setDesconto(porcentagemDesconto);
+    public void adicionaDescontoItem(String codigo, int porcentagemDesconto) throws ItemInvalidoException {
+        getProduto(codigo).setDesconto(porcentagemDesconto);
     }
 
-    public void removeDesconto(String nome) throws ItemInvalidoException {
-        getProduto(nome).setDesconto(0);
+    public void removeDesconto(String codigo) throws ItemInvalidoException {
+        getProduto(codigo).setDesconto(0);
     }
 
     public void removeDesconto(Item item){
@@ -132,9 +132,9 @@ public class Inventario implements Serializable {
 
 
     public String getRelatorio(){
-        String out = String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Nome", "Codigo", "Quantidade", "Preco", "Desconto (%)", "Valor total");
+        String out = String.format("%-20s %-20s %-20s %-20s %-20s %-20s %-20s\n", "Nome", "Codigo", "Quantidade", "Preco","Preço Original", "Desconto (%)", "Valor total");
         for(Item i : itens){
-            out+=String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n",i.getProduto().getNome(), i.getProduto().getCodigo(), i.getQuantidade(), i.getProduto().getPreco(), i.getProduto().getDesconto(), i.calculaValorTotal());
+            out+=String.format("%-20s %-20s %-20s %-20s %-20s %-20s %-20s\n",i.getProduto().getNome(), i.getProduto().getCodigo(), i.getQuantidade(), i.getProduto().getPreco(), i.getProduto().getPrecoOriginal() ,i.getProduto().getDesconto(), i.calculaValorTotal());
         }
         return out;
     }

@@ -181,6 +181,9 @@ public class Mercado implements Serializable{
         vendas.adicionaVenda(gerenciador.getCaixa(numero).getVendaAtual());
         return gerenciador.getCaixaNumero(numero).finalizaCompra();
     }
+    public void cancelaCompra(String tipoCaixa, int caixaNumero) throws CaixaInvalidoException {
+        getCaixaPorTipo(tipoCaixa).getCaixaNumero(caixaNumero).setVendaAtual(null);
+    }
 
     private GerenciadorCaixaAutomatico getCaixaPorTipo(String tipo) throws CaixaInvalidoException {
         switch (tipo){

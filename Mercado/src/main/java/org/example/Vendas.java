@@ -34,57 +34,59 @@ public class Vendas implements Serializable {
         return vendas.indexOf(venda);
     }
 
-    public ArrayList<Venda> getVendasDia(Date data){
-        ArrayList<Venda> inicio = getVendasAno(data);
+    public Vendas getVendasDia(Date data) throws VendaInvalidaException {
+        Vendas inicio = getVendasMes(data);
 
         Calendar c = Calendar.getInstance();
         c.setTime(data);
         int dia = c.get(Calendar.DAY_OF_MONTH);
 
-        ArrayList<Venda> output = new ArrayList<>();
+//        ArrayList<Venda> output = new ArrayList<>();
+        Vendas output = new Vendas();
 
-        for(Venda venda : inicio){
+        for(Venda venda : inicio.getVendas()){
             c.setTime(venda.getData());
             int dia2 = c.get(Calendar.DAY_OF_MONTH);
             if(dia == dia2)
-                output.add(venda);
+                output.adicionaVenda(venda);
         }
 
         return output;
     }
 
-    public ArrayList<Venda> getVendasMes(Date data){
-        ArrayList<Venda> inicio = getVendasAno(data);
+    public Vendas getVendasMes(Date data) throws VendaInvalidaException {
+        Vendas inicio = getVendasAno(data);
 
         Calendar c = Calendar.getInstance();
         c.setTime(data);
         int mes = c.get(Calendar.MONTH);
 
-        ArrayList<Venda> output = new ArrayList<>();
+        Vendas output = new Vendas();
 
-        for(Venda venda : inicio){
+        for(Venda venda : inicio.getVendas()){
             c.setTime(venda.getData());
             int mes2 = c.get(Calendar.MONTH);
             if(mes == mes2)
-                output.add(venda);
+                output.adicionaVenda(venda);
         }
 
         return output;
 
     }
 
-    public ArrayList<Venda> getVendasAno(Date data){
+    public Vendas getVendasAno(Date data) throws VendaInvalidaException {
         Calendar c = Calendar.getInstance();
 
         c.setTime(data);
         int ano = c.get(Calendar.YEAR);
-        ArrayList<Venda> output = new ArrayList<>();
+//        ArrayList<Venda> output = new ArrayList<>();
+        Vendas output = new Vendas();
 
         for(Venda venda: vendas){
             c.setTime(venda.getData());
             int ano2 = c.get(Calendar.YEAR);
             if(ano == ano2)
-                output.add(venda);
+                output.adicionaVenda(venda);
         }
         return output;
     }
@@ -98,20 +100,20 @@ public class Vendas implements Serializable {
     }
 
     public String getRelatorio(){
-        String out = String.format("%-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa");
+        String out = String.format("%-20s %-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa", "Total Arrecadado");
         for (Venda v : vendas){
             Calendar c = Calendar.getInstance();
             c.setTime(v.getData());
             String dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
             String mes = String.valueOf(c.get(Calendar.MONTH));
             String ano = String.valueOf(c.get(Calendar.YEAR));
-            out+=String.format("%-20s %-20s %-20s\n", dia+"/"+mes+"/"+ano, v.getPessoa().getTipo()+":"+v.getPessoa().getNome(), v.getCaixa().getNumero());
+            out+=String.format("%-20s %-20s %-20s %-20s\n", dia+"/"+mes+"/"+ano, v.getPessoa().getTipo()+":"+v.getPessoa().getNome(), v.getCaixa().getNumero(), v.getProdutosVendidos().getPrecoTotal());
         }
         return out;
     }
 
     public String getRelatorioFuncionario(String nome){
-        String out = String.format("%-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa");
+        String out = String.format("%-20s %-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa", "Total Arrecadado");
         for (Venda v : vendas){
             if(v.getPessoa().getNome().equals(nome)) {
                 Calendar c = Calendar.getInstance();
@@ -119,13 +121,13 @@ public class Vendas implements Serializable {
                 String dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
                 String mes = String.valueOf(c.get(Calendar.MONTH));
                 String ano = String.valueOf(c.get(Calendar.YEAR));
-                out += String.format("%-20s %-20s %-20s\n", dia + "/" + mes + "/"+ano, v.getPessoa().getTipo() + ":" + v.getPessoa().getNome(), v.getCaixa().getNumero());
+                out+=String.format("%-20s %-20s %-20s %-20s\n", dia+"/"+mes+"/"+ano, v.getPessoa().getTipo()+":"+v.getPessoa().getNome(), v.getCaixa().getNumero(), v.getProdutosVendidos().getPrecoTotal());
             }
         }
         return out;
     }
     public String getRelatorioCaixa(int numero){
-        String out = String.format("%-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa");
+        String out = String.format("%-20s %-20s %-20s %-20s\n", "Data", "Funcionario/Pessoa", "Numero Caixa/Tipo", "Total Arrecadado");
         for (Venda v : vendas){
             if(v.getCaixa().getNumero() == numero) {
                 Calendar c = Calendar.getInstance();
@@ -133,7 +135,10 @@ public class Vendas implements Serializable {
                 String dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
                 String mes = String.valueOf(c.get(Calendar.MONTH));
                 String ano = String.valueOf(c.get(Calendar.YEAR));
-                out += String.format("%-20s %-20s %-20s\n", dia + "/" + mes + "/ano", v.getPessoa().getTipo() + ":" + v.getPessoa().getNome(), v.getCaixa().getNumero());
+                String tipoCaixa= "caixa manual";
+                if(v.getCaixa().getClass() == Caixa.class)
+                    tipoCaixa = "caixa automatico";
+                out+=String.format("%-20s %-20s %-20s %-20s\n", dia+"/"+mes+"/"+ano, v.getPessoa().getTipo()+":"+v.getPessoa().getNome(), v.getCaixa().getNumero()+"/"+tipoCaixa, v.getProdutosVendidos().getPrecoTotal());
             }
         }
         return out;
