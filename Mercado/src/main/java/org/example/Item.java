@@ -44,12 +44,6 @@ public class Item implements Comparable<Item>, Serializable {
             quantidade-=1;
     }
 
-    public void vende(int quantidade) throws QuantidadeInvalidaException {
-        if(this.quantidade - quantidade < 0)
-            throw new QuantidadeInvalidaException("Foi requisitada uma quantidade de produtos maior do que a que há no estoque.");
-        this.quantidade -= quantidade;
-    }
-
     public void adiciona(int quantidade) throws QuantidadeInvalidaException {
         if(quantidade <= 0)
             throw new QuantidadeInvalidaException("É necessário adicionar uma quantidade maior que zero");
