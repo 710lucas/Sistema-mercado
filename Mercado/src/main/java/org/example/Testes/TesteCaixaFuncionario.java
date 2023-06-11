@@ -27,7 +27,7 @@ public class TesteCaixaFuncionario {
 
     @Test
     public void adiconarCarrinho() throws CaixaInvalidoException, VendaInvalidaException, PessoaInvalidaException, FuncionarioException, ItemInvalidoException, QuantidadeInvalidaException {
-        CaixaFuncionario c = new CaixaFuncionario(0, inventario);
+        CaixaFuncionario c = new CaixaFuncionario(0);
         c.login(funcionario);
         c.adicionaCarrinho(inventario.getProduto("TRL"), 1);
         Venda v = c.getVendaAtual();

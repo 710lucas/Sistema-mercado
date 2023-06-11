@@ -8,7 +8,6 @@ import java.util.Date;
 public class Caixa implements Serializable {
 
 
-    private Inventario  inventario;
     private Pessoa pessoa;
     private double dinheiro;
     private Vendas vendas = new Vendas();
@@ -16,10 +15,9 @@ public class Caixa implements Serializable {
     private Date horarioDeEntrada;
     private Venda vendaAtual;
 
-    public Caixa(int numero, Inventario inventario) throws CaixaInvalidoException {
+    public Caixa(int numero) throws CaixaInvalidoException {
         if(numero < 0)
             throw new CaixaInvalidoException("O numero de um caixa nao pode ser menor que 0");
-        this.inventario = inventario;
         this.numero = numero;
         vendaAtual = null;
     }
@@ -36,9 +34,6 @@ public class Caixa implements Serializable {
         return dinheiro;
     }
 
-    public Inventario getInventario() {
-        return inventario;
-    }
 
 
     public void adicionaCarrinho(Produto produto, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException, PessoaInvalidaException, CaixaInvalidoException, VendaInvalidaException {
@@ -52,7 +47,7 @@ public class Caixa implements Serializable {
         Item item = new Item(produto, quantidade);
         item.setQuantidade(quantidade);
 
-        vendaAtual.adicionaProduto(item);
+        vendaAtual.adicionaItem(item);
 
     }
 
@@ -82,9 +77,6 @@ public class Caixa implements Serializable {
         this.dinheiro = dinheiro;
     }
 
-    public void setInventario(Inventario inventario) {
-        this.inventario = inventario;
-    }
 
     public void setNumero(int numero) {
         this.numero = numero;
@@ -102,6 +94,14 @@ public class Caixa implements Serializable {
         return numero;
     }
 
+    public Date getHorarioDeEntrada(){
+        return horarioDeEntrada;
+    }
+
+    public void setHorarioDeEntrada(Date horarioDeEntrada) {
+        this.horarioDeEntrada = horarioDeEntrada;
+    }
+
     public Venda getVendaAtual() throws VendaInvalidaException {
         if(vendaAtual == null){
             throw new VendaInvalidaException("Ainda não há uma venda ocorrendo");
@@ -109,7 +109,7 @@ public class Caixa implements Serializable {
         return vendaAtual;
     }
 
-    public Inventario getCarrinho(){
-        return inventario;
+    public Inventario getCarrinho() throws VendaInvalidaException {
+        return getVendaAtual().getProdutosVendidos();
     }
 }

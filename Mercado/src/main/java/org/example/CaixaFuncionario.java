@@ -6,13 +6,10 @@ import java.util.Date;
 
 public class CaixaFuncionario extends Caixa{
 
-    private Inventario  inventario;
     private Funcionario pessoa;
-    private int numero;
-    private Date horarioDeEntrada;
 
-    public CaixaFuncionario(int numero, Inventario inventario) throws CaixaInvalidoException {
-        super(numero, inventario);
+    public CaixaFuncionario(int numero) throws CaixaInvalidoException {
+        super(numero);
         setDinheiro(0);
         setVendaAtual(null);
     }
@@ -31,7 +28,7 @@ public class CaixaFuncionario extends Caixa{
         Item item = new Item(produto, quantidade);
         item.setQuantidade(quantidade);
 
-        getVendaAtual().adicionaProduto(item);
+        getVendaAtual().adicionaItem(item);
 
     }
 
@@ -40,7 +37,7 @@ public class CaixaFuncionario extends Caixa{
         if(funcionario.getTrabalhando())
             throw new FuncionarioException("Funcionario já está trabalhando");
 
-        horarioDeEntrada = new Date();
+        setHorarioDeEntrada(new Date());
 
         funcionario.setTrabalhando(true);
         this.pessoa = funcionario;
@@ -51,7 +48,7 @@ public class CaixaFuncionario extends Caixa{
         if(!funcionario.getTrabalhando())
             throw new FuncionarioException("Funcionario não estava trabalhando para poder exercer logout");
 
-        funcionario.adicionaHorasTrabalhadas(horarioDeEntrada, new Date());
+        funcionario.adicionaHorasTrabalhadas(getHorarioDeEntrada(), new Date());
         funcionario.setTrabalhando(false);
         this.pessoa = funcionario;
     }

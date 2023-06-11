@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class GerenciadorCaixaAutomatico implements Serializable {
     private ArrayList<Caixa> caixas = new ArrayList<>();
 
-    public void adicionaCaixa(int numero, Inventario inventario) throws CaixaInvalidoException {
-        caixas.add(new Caixa(numero, inventario));
+    public void adicionaCaixa(int numero) throws CaixaInvalidoException {
+        caixas.add(new Caixa(numero));
     }
 
     public void adicionaCaixa(Caixa caixa) throws CaixaInvalidoException {

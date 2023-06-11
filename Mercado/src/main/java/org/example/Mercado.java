@@ -24,18 +24,14 @@ public class Mercado implements Serializable{
         vendas = new Vendas();
     }
 
-    public void adicionarGerente(Gerente gerente) throws PessoaInvalidaException {
-        this.gerente.adicionarGerente(gerente);
-    }
+
     public void adicionarGerente(String nome, int idade, double salario) throws GerenteJaExisteException, PessoaInvalidaException {
         if (gerente.temGerente(nome))
             throw new GerenteJaExisteException();
         gerente.adicionarGerente(nome, idade, salario);
     }
-    public void deletaGerente(Gerente gerente){
-        this.gerente.deletaGerente(gerente);
-    }
-    public void deletaGerente(String nome) throws PessoaInvalidaException {
+
+    public void deletarGerente(String nome) throws PessoaInvalidaException {
         gerente.deletaGerente(nome);
     }
     public boolean temGerente(String nome) throws PessoaInvalidaException {
@@ -51,9 +47,7 @@ public class Mercado implements Serializable{
         return gerente.getRelatorio();
     }
 
-    public void adicionarFuncionario(Funcionario funcionario) throws FuncionarioException {
-        funcionarios.adicionarFuncionario(funcionario);
-    }
+
     public void adicionarFuncionario(String nome, int idade, double salario) throws PessoaInvalidaException, FuncionarioException {
         if(funcionarios.temFuncionario(nome))
             throw new FuncionarioException("Funcionario já existe");
@@ -62,11 +56,11 @@ public class Mercado implements Serializable{
     public Funcionario getfuncionario(String nome) throws FuncionarioException {
         return funcionarios.getFuncionario(nome);
     }
-    public void deletaFuncionario(Funcionario funcionario) throws FuncionarioException {
+    public void deletarFuncionario(Funcionario funcionario) throws FuncionarioException {
         funcionarios.deletaFuncionario(funcionario);
     }
-    public void deletaFuncionario(String nome) throws FuncionarioException {
-        deletaFuncionario(getfuncionario(nome));
+    public void deletarFuncionario(String nome) throws FuncionarioException {
+        deletarFuncionario(getfuncionario(nome));
     }
     public boolean temFuncionario(String nome){
         return funcionarios.temFuncionario(nome);
@@ -94,33 +88,22 @@ public class Mercado implements Serializable{
     public String getRelatorioCaixaAutomatico(){
         return caixaAutomatico.getRelatorio();
     }
-    public void adicionarCaixaAutomatico(int numero) throws CaixaInvalidoException {
+
+    public void adicionarCaixa(String tipo, int numero) throws CaixaInvalidoException {
         if(numero == -1) {
-            adicionarCaixaAutomatico();
+            adicionarCaixa(tipo);
             return;
         }
-        caixaAutomatico.adicionaCaixa(numero,inventario);
+        getCaixaPorTipo(tipo).adicionaCaixa(numero);
     }
-    public void adicionarCaixaAutomatico() throws CaixaInvalidoException {
-        caixaAutomatico.adicionaCaixa(caixaAutomatico.getQuantidadeCaixas(), inventario);
-    }
-    public void removerCaixaAutomatico(int numero) throws CaixaInvalidoException {
-        caixaAutomatico.removeCaixa(numero);
-    }
-    public void adicionarCaixaManual(int numero) throws CaixaInvalidoException {
-       if(numero == -1) {
-           adicionarCaixaManual();
-           return;
-       }
-       caixaFuncionario.adicionaCaixa(numero, inventario);
-    }
-    public void adicionarCaixaManual() throws CaixaInvalidoException {
-        caixaFuncionario.adicionaCaixa(caixaFuncionario.getQuantidadeCaixas(), inventario);
+    public void adicionarCaixa(String tipo) throws CaixaInvalidoException {
+        getCaixaPorTipo(tipo).adicionaCaixa(getCaixaPorTipo(tipo).getQuantidadeCaixas());
     }
 
-    public void removerCaixaManual(int numero) throws CaixaInvalidoException {
-        caixaFuncionario.removeCaixa(numero);
+    public void removerCaixa(String tipo, int numero) throws CaixaInvalidoException {
+        getCaixaPorTipo(tipo).removeCaixa(numero);
     }
+
     public Caixa getCaixaNumero(int numero, String tipo) throws CaixaInvalidoException {
         return getCaixaPorTipo(tipo).getCaixaNumero(numero);
     }
@@ -140,7 +123,7 @@ public class Mercado implements Serializable{
         String out = String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Nome", "Codigo", "Quantidade", "Preco", "Desconto (%)", "Valor total");
         for(Item i : inventario.getItens()){
             if(i.getProduto().getNome().toLowerCase().contains(nome.toLowerCase()))
-                out+=String.format("%-20s %-20s %-20s %-20s %-20s\n",i.getProduto().getNome(), i.getProduto().getCodigo(), i.getQuantidade(), i.getProduto().getPreco(), i.getProduto().getDesconto(), i.calculaValorTotal());
+                out+=String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n",i.getProduto().getNome(), i.getProduto().getCodigo(), i.getQuantidade(), i.getProduto().getPreco(), i.getProduto().getDesconto(), i.calculaValorTotal());
         }
         return out;
     }
@@ -153,20 +136,21 @@ public class Mercado implements Serializable{
         return out;
     }
     public void adicionarItemCarrinho(String tipo, String codigo, int numero, int quantidade) throws CaixaInvalidoException, ItemInvalidoException, PessoaInvalidaException, QuantidadeInvalidaException, VendaInvalidaException {
-        if(quantidade > inventario.getItem(codigo).getQuantidade() )
+        if(quantidade > inventario.getItem(codigo).getQuantidade() ) {
             throw new QuantidadeInvalidaException("Não há uma quantidade suficiente de itens para adicionar ao carrinho.");
+        }
         Caixa caixa = getCaixaPorTipo(tipo).getCaixaNumero(numero);
         try {
             if (caixa.getVendaAtual().getProdutosVendidos().temProduto(codigo)) {
                 if (caixa.getVendaAtual().getProdutosVendidos().getItem(codigo).getQuantidade() + quantidade > inventario.getItem(codigo).getQuantidade())
                     throw new QuantidadeInvalidaException("Não há uma quantidade suficiente de itens para adicionar ao carrinho.");
-                caixa.getVendaAtual().getProdutosVendidos().getItem(codigo).adiciona(quantidade);
+                caixa.adicionaCarrinho(inventario.getProduto(codigo), quantidade);
             }
         } catch(VendaInvalidaException e) {
             caixa.adicionaCarrinho(inventario.getItem(codigo).getProduto(), quantidade);
         }
     }
-    public void removerItemCaixa(String tipo, String codigo, int numero, int quantidade) throws CaixaInvalidoException, ItemInvalidoException, QuantidadeInvalidaException {
+    public void removerItemCarrinho(String tipo, String codigo, int numero, int quantidade) throws CaixaInvalidoException, ItemInvalidoException, QuantidadeInvalidaException {
         getCaixaPorTipo(tipo).getCaixaNumero(numero).removeItem(codigo, quantidade);
     }
     public String verItensCarrinho(String tipo, int numero) throws CaixaInvalidoException, VendaInvalidaException {
@@ -182,7 +166,7 @@ public class Mercado implements Serializable{
         return gerenciador.getCaixaNumero(numero).finalizaCompra();
     }
     public void cancelaCompra(String tipoCaixa, int caixaNumero) throws CaixaInvalidoException {
-        getCaixaPorTipo(tipoCaixa).getCaixaNumero(caixaNumero).setVendaAtual(null);
+        getCaixaPorTipo(tipoCaixa).getCaixaNumero(caixaNumero).cancelaCompra();
     }
 
     private GerenciadorCaixaAutomatico getCaixaPorTipo(String tipo) throws CaixaInvalidoException {

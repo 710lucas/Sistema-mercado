@@ -115,7 +115,7 @@ public class Main {
                     codigo = stringInput("Informe o codigo do produto que voce deseja remover: ");
                     quantidade = intInput("Informe a quantidade que você deseja remover: ");
                     try {
-                        mercado.removerItemCaixa(TIPO_CAIXA, codigo, caixaNumero, quantidade);
+                        mercado.removerItemCarrinho(TIPO_CAIXA, codigo, caixaNumero, quantidade);
                         break;
                     } catch (CaixaInvalidoException | ItemInvalidoException | QuantidadeInvalidaException e) {
                         System.out.println("Não foi possível remover item do carrinho");
@@ -408,7 +408,7 @@ public class Main {
                 case ADICIONAR:
                     numero = intInput("Informe o número do caixa (digite -1 se quiser que o número seja escolhido automaticamente): ");
                     try {
-                        mercado.adicionarCaixaManual(numero);
+                        mercado.adicionarCaixa("manual", numero);
                         System.out.println("Caixa de numero foi adicionado com sucesso");
                         break;
                     } catch (CaixaInvalidoException e) {
@@ -419,7 +419,7 @@ public class Main {
                 case REMOVER:
                     numero = intInput("Informe o número do caixa que você deseja remover: ");
                     try{
-                        mercado.removerCaixaManual(numero);
+                        mercado.removerCaixa("manual", numero);
                         break;
                     } catch (CaixaInvalidoException e) {
                         System.out.println(e.getMessage());
@@ -451,7 +451,7 @@ public class Main {
                 case ADICIONAR:
                     numero = intInput("Informe o número do caixa (digite -1 se quiser que o número seja escolhido automaticamente): ");
                     try {
-                        mercado.adicionarCaixaAutomatico(numero);
+                        mercado.adicionarCaixa("automatico", numero);
                         System.out.println("Caixa de numero foi adicionado com sucesso");
                         break;
                     } catch (CaixaInvalidoException e) {
@@ -462,7 +462,7 @@ public class Main {
                 case REMOVER:
                     numero = intInput("Informe o número do caixa que você deseja remover: ");
                     try{
-                        mercado.removerCaixaAutomatico(numero);
+                        mercado.removerCaixa("automatico", numero);
                         break;
                     } catch (CaixaInvalidoException e) {
                         System.out.println(e.getMessage());
@@ -510,7 +510,7 @@ public class Main {
                 case REMOVER:
                     nome = stringInput("Nome do gerente que voce deseja remover: ");
                     try{
-                        mercado.deletaGerente(nome);
+                        mercado.deletarGerente(nome);
                         System.out.println("Gerente "+nome+" foi removido com sucesso");
                         break;
                     } catch (PessoaInvalidaException e) {
@@ -579,7 +579,7 @@ public class Main {
                 case REMOVER:
                     nome = stringInput("Informe o nome do funcionário que você deseja remover: ");
                     try {
-                        mercado.deletaFuncionario(nome);
+                        mercado.deletarFuncionario(nome);
                         System.out.println("Funcionario removido com sucesso!");
                         break;
                     } catch (FuncionarioException e) {

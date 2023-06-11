@@ -8,8 +8,8 @@ public class GerenciadorCaixaFuncionario extends GerenciadorCaixaAutomatico{
 
 
     @Override
-    public void adicionaCaixa(int numero, Inventario inventario) throws CaixaInvalidoException {
-        getCaixas().add(new CaixaFuncionario(numero, inventario));
+    public void adicionaCaixa(int numero) throws CaixaInvalidoException {
+        getCaixas().add(new CaixaFuncionario(numero));
     }
 
     @Override

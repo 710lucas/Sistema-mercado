@@ -46,8 +46,12 @@ public class Venda implements Serializable {
         return produtosVendidos;
     }
 
-    public void adicionaProduto(Item item) throws QuantidadeInvalidaException {
+    public void adicionaItem(Item item) throws QuantidadeInvalidaException {
         produtosVendidos.adicionaItem(item);
+    }
+
+    public void removeItem(Item item) throws ItemInvalidoException {
+        produtosVendidos.removeItem(item.getProduto().getCodigo());
     }
 
 

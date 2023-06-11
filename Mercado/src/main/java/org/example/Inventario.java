@@ -139,6 +139,14 @@ public class Inventario implements Serializable {
         return out;
     }
 
+    public int getPosicao(Item item) throws ItemInvalidoException {
+        for(int i = 0; i<itens.size(); i++){
+            if(itens.get(i).equals(item))
+                return i;
+        }
+        throw new ItemInvalidoException("Não foi possivel achar este item");
+    }
+
 
 
 }
