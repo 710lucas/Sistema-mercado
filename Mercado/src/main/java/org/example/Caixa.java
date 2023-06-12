@@ -53,8 +53,10 @@ public class Caixa implements Serializable {
 
     public void removeItem(String codigo, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
         int quantidadeInv = vendaAtual.getProdutosVendidos().getItem(codigo).getQuantidade();
-        if(quantidade <= quantidadeInv)
+        if(quantidade < quantidadeInv)
             vendaAtual.getProdutosVendidos().getItem(codigo).setQuantidade(quantidadeInv-quantidade);
+        else if(quantidade == quantidadeInv)
+            vendaAtual.getProdutosVendidos().removeItem(codigo);
     }
 
     public double finalizaCompra() throws VendaInvalidaException, PessoaInvalidaException, CaixaInvalidoException {

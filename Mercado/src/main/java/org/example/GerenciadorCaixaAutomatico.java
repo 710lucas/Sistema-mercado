@@ -9,6 +9,8 @@ public class GerenciadorCaixaAutomatico implements Serializable {
     private ArrayList<Caixa> caixas = new ArrayList<>();
 
     public void adicionaCaixa(int numero) throws CaixaInvalidoException {
+        if(temCaixa(getCaixaNumero(numero)))
+            throw new CaixaInvalidoException("Já existe um caixa com o mesmo numero, tente adicionar um caixa com um numero diferente");
         caixas.add(new Caixa(numero));
     }
 

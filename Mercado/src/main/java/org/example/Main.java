@@ -29,6 +29,12 @@ public class Main {
 
             switch (escolha) {
                 case FUNCIONARIO -> {
+                    try {
+                        System.out.println(mercado.getListaCaixa("manual"));
+                    } catch (CaixaInvalidoException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
                     String nome = stringInput("Seu nome:");
                     caixa(nome, "manual");
                     mercado.salvaMercado(ARQUIVO);
@@ -42,6 +48,12 @@ public class Main {
                     mercado.salvaMercado(ARQUIVO);
                 }
                 case AUTOMATICO -> {
+                    try {
+                        System.out.println(mercado.getListaCaixa("automatico"));
+                    } catch (CaixaInvalidoException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
                     String nome = stringInput("Seu nome:");
                     caixa(nome, "automatico");
                     mercado.salvaMercado(ARQUIVO);
@@ -611,15 +623,30 @@ public class Main {
     }
 
 
-    private static String stringInput(String message){
-        System.out.printf(message);
-        return sc.nextLine();
+    private static String stringInput(String mensagem){
+        try {
+            System.out.printf(mensagem);
+            return sc.nextLine();
+        } catch (Exception e) {
+            System.out.println("Os dados informados são invalidos");
+            return stringInput(mensagem);
+        }
     }
-    private static int intInput(String message){
-        return Integer.parseInt(stringInput(message));
+    private static int intInput(String mensagem){
+        try {
+            return Integer.parseInt(stringInput(mensagem));
+        } catch (NumberFormatException e) {
+            System.out.println("O numero informado é invalido, tente novamente");
+            return intInput(mensagem);
+        }
     }
-    private static double doubleInput(String message){
-        return Double.parseDouble(stringInput(message));
+    private static double doubleInput(String mensagem){
+        try {
+            return Double.parseDouble(stringInput(mensagem));
+        } catch (NumberFormatException e) {
+            System.out.println("O numero informado é invalido, tente novamente");
+            return doubleInput(mensagem);
+        }
     }
 
 }

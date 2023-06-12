@@ -89,6 +89,18 @@ public class Mercado implements Serializable{
         return caixaAutomatico.getRelatorio();
     }
 
+    public String getListaCaixa(String tipo) throws CaixaInvalidoException {
+        String out = "Lista de caixas:\n";
+        GerenciadorCaixaAutomatico gerenciador = getCaixaPorTipo(tipo);
+
+        for(Caixa c : gerenciador.getCaixas()){
+            out+=c.getNumero()+"\n";
+        }
+
+        out+="\nInforme um dos numero acima para se logar em um caixa!\n";
+        return out;
+    }
+
     public void adicionarCaixa(String tipo, int numero) throws CaixaInvalidoException {
         if(numero == -1) {
             adicionarCaixa(tipo);
@@ -145,7 +157,9 @@ public class Mercado implements Serializable{
                 if (caixa.getVendaAtual().getProdutosVendidos().getItem(codigo).getQuantidade() + quantidade > inventario.getItem(codigo).getQuantidade())
                     throw new QuantidadeInvalidaException("Não há uma quantidade suficiente de itens para adicionar ao carrinho.");
                 caixa.adicionaCarrinho(inventario.getProduto(codigo), quantidade);
+                return;
             }
+            caixa.adicionaCarrinho(inventario.getItem(codigo).getProduto(), quantidade);
         } catch(VendaInvalidaException e) {
             caixa.adicionaCarrinho(inventario.getItem(codigo).getProduto(), quantidade);
         }
