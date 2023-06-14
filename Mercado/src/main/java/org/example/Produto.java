@@ -2,20 +2,22 @@ package org.example;
 
 import org.example.Exceptions.ItemInvalidoException;
 
-public class Produto {
+import java.io.Serializable;
+
+public class Produto implements Serializable {
 
     private double preco;
 
-    private double precoComDesconto;
-
     private String nome;
+    private String codigo;
 
     private int desconto = 0;
 
-    public Produto(double preco, String nome) throws ItemInvalidoException {
+    public Produto(double preco, String nome, String codigo) throws ItemInvalidoException {
         validaProduto(preco, nome);
         this.preco = preco;
         this.nome = nome;
+        this.codigo = codigo;
     }
 
     public void validaProduto(double preco, String nome) throws ItemInvalidoException {
@@ -27,48 +29,41 @@ public class Produto {
         }
     }
 
-
-    public void validaDesconto(int desconto) throws ItemInvalidoException {
-        if(desconto < 0){
-            throw new ItemInvalidoException("O desconto não pode ser menor que zero");
-        }
-        if(desconto > 100){
-            throw new ItemInvalidoException("O desconto do item não pode ultrapassar cem porcento");
-        }
+    public void setPreco(double preco){
+        this.preco = preco;
     }
 
-    public void setPreco(double preco) throws ItemInvalidoException{
-        validaProduto(preco, this.nome);
-        this.preco = preco;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public void setNome(String nome){
         this.nome = nome;
     }
-
-    public void setDesconto(int desconto) throws ItemInvalidoException{
-        validaDesconto(desconto);
+    public void setDesconto(int desconto){
         this.desconto = desconto;
-        this.precoComDesconto = preco - (preco * (desconto/100));
-    }
-
-    public double getPrecoComDesconto() {
-        return precoComDesconto;
-    }
-
-    public int getDesconto() {
-        return desconto;
     }
 
     public double getPreco(){
-        return preco;
+        return preco-(preco*desconto/100);
     }
 
-    public String getNome() {
+    public String getNome(){
         return nome;
     }
+    public String getCodigo(){
+        return codigo;
+    }
 
-    public String toString(){
-        return "Produto do tipo " + nome + " com o desconto de: " + desconto + "%" + " totalizando: R$" + preco;
+    public double getPrecoOriginal(){
+        return preco;
+    }
+    public int getDesconto(){
+        return desconto;
+    }
+
+    @Override
+    public String toString() {
+        return "Produto: nome="+nome+", preço="+preco;
     }
 }

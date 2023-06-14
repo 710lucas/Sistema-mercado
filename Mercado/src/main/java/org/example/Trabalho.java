@@ -1,8 +1,9 @@
 package org.example;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Trabalho {
+public class Trabalho implements Serializable {
     private Date horaDeEntrada;
     private Date horaDeSaida;
 

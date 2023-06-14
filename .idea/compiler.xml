@@ -9,5 +9,8 @@
         <module name="Mercado" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Mercado" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>

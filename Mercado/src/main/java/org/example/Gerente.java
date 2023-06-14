@@ -2,12 +2,12 @@ package org.example;
 
 import org.example.Exceptions.PessoaInvalidaException;
 
-public class Gerente extends Pessoa{
+public class Gerente extends Pagavel{
 
-    public Gerente(String nome, int idade) throws PessoaInvalidaException {
-        super(nome, idade);
+    private final String tipo = "gerente";
+    public Gerente(String nome, int idade, double salario) throws PessoaInvalidaException {
+        super(nome, idade, salario, "gerente");
     }
-
 
 
 }
