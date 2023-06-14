@@ -1,6 +1,6 @@
 # Sistema de Gerenciamento de Mercado
 
-O sistema desenvolvido neste repositorio fornece 3 funcionalidades principais:
+Para uma explicação mais detalhada sobre cada classe desenvolvida no projeto, é possível acessar este [video](https://www.youtube.com/channel/UCgI_vch0Sek72UrqnwWjpBA)
 
 - A funcionalidade de gerenciar o mercado
 - A funcionalidade de se logar como atendente de um caixa
