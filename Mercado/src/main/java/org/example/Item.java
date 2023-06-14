@@ -1,40 +1,34 @@
 package org.example;
 
+import org.example.Exceptions.ClasseInvalidaException;
 import org.example.Exceptions.ItemInvalidoException;
 import org.example.Exceptions.QuantidadeInvalidaException;
 
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Comparable<Item>, Serializable {
 
     private Produto produto;
-    private int quantidade;
+    private int quantidade = 1;
 
-    public Item(Produto produto, int quantidade) throws QuantidadeInvalidaException {
-        validaQuantidade(quantidade);
-        this.produto = produto;
+    public Item(Produto p, int quantidade){
+        this.produto = p;
         this.quantidade = quantidade;
     }
 
-    public Item(Produto produto){
-        this.produto = produto;
+    public Item(Produto p){
+        this.produto = p;
         this.quantidade = 1;
     }
 
-    public Item(String nome, double preco) throws ItemInvalidoException {
-        Produto produto = new Produto(preco, nome);
-        this.produto = produto;
+    public Item(String nome, double preco, String codigo) throws ItemInvalidoException {
+        this.produto = new Produto(preco, nome, codigo);
         this.quantidade = 1;
     }
 
-    public Item(String nome, double preco, int quantidade) throws ItemInvalidoException, QuantidadeInvalidaException {
-        Produto produto = new Produto(preco, nome);
-        validaQuantidade(quantidade);
-        this.produto = produto;
+    public Item(String nome, double preco, int quantidade, String codigo) throws ItemInvalidoException {
+        this.produto = new Produto(preco, nome, codigo);
         this.quantidade = quantidade;
-    }
-    public void validaQuantidade(int quantidade) throws QuantidadeInvalidaException {
-        if(quantidade < 0){
-            throw new QuantidadeInvalidaException("A quantidade de itens não pode ser igual a zero");
-        }
     }
 
     public Produto getProduto(){
@@ -45,33 +39,35 @@ public class Item {
         return quantidade;
     }
 
-    public void setProduto(Produto produto){
-        this.produto = produto;
+    public void vende(){
+        if(quantidade >= 1)
+            quantidade-=1;
+    }
+
+    public void adiciona(int quantidade) throws QuantidadeInvalidaException {
+        if(quantidade <= 0)
+            throw new QuantidadeInvalidaException("É necessário adicionar uma quantidade maior que zero");
+        this.quantidade+=quantidade;
+    }
+
+    public void setProduto(Produto p) throws ClasseInvalidaException {
+        if(p == null)
+            throw new ClasseInvalidaException("Classe produto está definida como null");
+        produto = p;
     }
 
     public void setQuantidade(int quantidade) throws QuantidadeInvalidaException {
-        validaQuantidade(quantidade);
+        if(quantidade < 0)
+            throw new QuantidadeInvalidaException("Não é possível adicionar uma quantidade negativa");
         this.quantidade = quantidade;
     }
 
-    public void vende() throws QuantidadeInvalidaException{
-        if(quantidade-1 < 0){
-            throw new QuantidadeInvalidaException("Não há produtos suficientes disponiveis");
-        }
-        this.quantidade = quantidade - 1;
+    @Override
+    public int compareTo(Item o) {
+        return Double.compare(this.getProduto().getPreco(), o.getProduto().getPreco());
     }
 
-    public void vende(int quantidadeVendida) throws QuantidadeInvalidaException{
-        if(quantidade-quantidadeVendida < 0){
-            throw new QuantidadeInvalidaException("Não há produtos suficientes disponiveis");
-        }
-        this.quantidade = quantidade - quantidadeVendida;
+    public double calculaValorTotal() {
+        return quantidade*produto.getPreco();
     }
-
-    public void adiciona(int quantidadeAdiconada){
-        this.quantidade = quantidade + quantidadeAdiconada;
-    }
-
-
-
 }

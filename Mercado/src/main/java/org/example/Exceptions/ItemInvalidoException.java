@@ -1,11 +1,9 @@
 package org.example.Exceptions;
 
-public class ItemInvalidoException extends Exception {
-
+public class ItemInvalidoException extends Exception{
     public ItemInvalidoException(){
-        super("Os dados informados são inválidos");
+        super("O código informado não corresponde a nenhum item no inventário");
     }
-
     public ItemInvalidoException(String mensagem){
         super(mensagem);
     }

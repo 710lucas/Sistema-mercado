@@ -2,7 +2,9 @@ package org.example;
 
 import org.example.Exceptions.PessoaInvalidaException;
 
-public class Pessoa {
+import java.io.Serializable;
+
+public class Pessoa implements Serializable {
 
 
     private final String NOME_INVALIDO = "Nome deve ter pelo menos uma letra";
@@ -10,6 +12,7 @@ public class Pessoa {
 
     private String nome;
     private int idade;
+    private String tipo = "pessoa";
 
     public Pessoa(String nome, int idade) throws PessoaInvalidaException {
 
@@ -37,6 +40,14 @@ public class Pessoa {
             throw new PessoaInvalidaException(NOME_INVALIDO);
 
         this.nome = nome;
+    }
+
+    public String getTipo(){
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getNome(){
