@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Mercado">
+    <output-path>$PROJECT_DIR$/out/artifacts/Mercado</output-path>
+    <root id="archive" name="Mercado.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/Mercado/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
